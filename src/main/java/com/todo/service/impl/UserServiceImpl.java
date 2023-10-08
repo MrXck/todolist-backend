@@ -1,6 +1,7 @@
 package com.todo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.todo.dto.user.RegisterUserDTO;
 import com.todo.dto.user.UpdateUserDTO;
@@ -61,17 +62,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, username);
+        queryWrapper.ne(User::getId, UserThreadLocal.get());
         User user = this.getOne(queryWrapper);
         if (user != null) {
             throw new APIException(Constant.USERNAME_ALREADY_ERROR);
         }
 
-        user = new User();
-        user.setPassword(MD5Utils.md5(password));
-        user.setId(UserThreadLocal.get());
-        user.setUsername(username);
-        user.setUpdateTime(LocalDateTime.now());
-        this.updateById(user);
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getId, UserThreadLocal.get());
+        updateWrapper.set(User::getUsername, username);
+        updateWrapper.set(User::getPassword, MD5Utils.md5(password));
+        updateWrapper.set(User::getUpdateTime, LocalDateTime.now());
+
+        this.update(updateWrapper);
     }
 
     @Override
