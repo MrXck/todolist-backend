@@ -1,0 +1,27 @@
+server:
+  port: 9000
+spring:
+  #  jackson:
+#    date-format: yyyy-MM-dd
+  mvc:
+    view:
+      prefix: /
+  application:
+    name: bilibili
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3306/todolist
+    username: root
+    password: 123
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    jdbc-type-for-null: 'null'
+  global-config:
+    db-config:
+      id-type: assign_id
