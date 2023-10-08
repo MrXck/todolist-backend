@@ -7,7 +7,7 @@ spring:
     view:
       prefix: /
   application:
-    name: bilibili
+    name: todolist
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
