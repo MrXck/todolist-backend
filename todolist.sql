@@ -11,7 +11,7 @@
  Target Server Version : 50644 (5.6.44)
  File Encoding         : 65001
 
- Date: 09/10/2023 15:49:09
+ Date: 09/10/2023 21:58:51
 */
 
 SET NAMES utf8mb4;
@@ -74,6 +74,7 @@ CREATE TABLE `user`  (
   `create_time` datetime NOT NULL,
   `update_time` datetime NOT NULL,
   `last_login_time` datetime NULL DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 

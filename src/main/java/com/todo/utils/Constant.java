@@ -20,4 +20,6 @@ public class Constant {
 
     public static final String DATE_ERROR = "开始时间不能在结束时间之后";
     public static final String NOT_FOUND_NOTE_ERROR = "没有这篇文章";
+
+    public static final String SEND_TODO_EMAIL_SUBJECT = "今日待办事项";
 }

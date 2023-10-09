@@ -18,6 +18,12 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: xxxx
+    password: xxxx
+    protocol: smtp
 mybatis-plus:
   configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
