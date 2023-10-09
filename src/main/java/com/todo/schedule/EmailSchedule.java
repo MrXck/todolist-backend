@@ -6,6 +6,7 @@ import com.todo.pojo.User;
 import com.todo.service.TodoService;
 import com.todo.service.UserService;
 import com.todo.utils.Constant;
+import com.todo.utils.EmailValidatorUtils;
 import com.todo.utils.MailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -65,6 +66,9 @@ public class EmailSchedule {
             String email = user.getEmail();
             if (email != null && !email.isEmpty()) {
                 try {
+                    if (!EmailValidatorUtils.isValid(email)) {
+                        continue;
+                    }
                     mailUtils.sendMail(email, Constant.SEND_TODO_EMAIL_SUBJECT, String.join("\n\n", map.get(user.getId())));
                 } catch (Exception e) {
                     e.printStackTrace();
