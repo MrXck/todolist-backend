@@ -10,10 +10,7 @@ import com.todo.exception.APIException;
 import com.todo.mapper.UserMapper;
 import com.todo.pojo.User;
 import com.todo.service.UserService;
-import com.todo.utils.Constant;
-import com.todo.utils.JwtUtils;
-import com.todo.utils.MD5Utils;
-import com.todo.utils.UserThreadLocal;
+import com.todo.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +56,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateUser(UpdateUserDTO updateUserDTO) {
         String username = updateUserDTO.getUsername();
         String password = updateUserDTO.getPassword();
+        String email = updateUserDTO.getEmail();
+
+        if ((email != null && !email.isEmpty()) && !EmailValidatorUtils.isValid(email)) {
+            throw new APIException(Constant.CHECK_EMAIL_ERROR);
+        }
 
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, username);
@@ -73,6 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         updateWrapper.set(User::getUsername, username);
         updateWrapper.set(User::getPassword, MD5Utils.md5(password));
         updateWrapper.set(User::getUpdateTime, LocalDateTime.now());
+        updateWrapper.set(email != null, User::getEmail, email);
 
         this.update(updateWrapper);
     }

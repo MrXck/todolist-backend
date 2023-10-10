@@ -21,8 +21,8 @@ spring:
   mail:
     host: smtp.qq.com
     port: 587
-    username: xxxx
-    password: xxxx
+    username: 1111
+    password: 1111
     protocol: smtp
 mybatis-plus:
   configuration:

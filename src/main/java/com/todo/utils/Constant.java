@@ -22,4 +22,6 @@ public class Constant {
     public static final String NOT_FOUND_NOTE_ERROR = "没有这篇文章";
 
     public static final String SEND_TODO_EMAIL_SUBJECT = "今日待办事项";
+
+    public static final String CHECK_EMAIL_ERROR = "请输入正确的邮箱";
 }
