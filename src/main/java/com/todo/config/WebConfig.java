@@ -1,5 +1,6 @@
 package com.todo.config;
 
+import com.todo.interceptor.RateLimitInterceptor;
 import com.todo.interceptor.TokenInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -24,6 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
                 "/img/**",
                 "/css/**",
         };
+        registry.addInterceptor(new RateLimitInterceptor()).addPathPatterns(path).excludePathPatterns(exclude);
         registry.addInterceptor(this.tokenInterceptor).addPathPatterns(path).excludePathPatterns(exclude);
     }
 }
