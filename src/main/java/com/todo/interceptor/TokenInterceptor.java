@@ -5,7 +5,6 @@ import com.todo.utils.NoAuthorization;
 import com.todo.utils.UserThreadLocal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -39,7 +38,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
 
         String token = request.getHeader("Authorization");
-        if (!StringUtils.isEmpty(token)) {
+        if (!token.isEmpty()) {
             try {
                 String userId = jwtUtils.checkToken(token);
                 UserThreadLocal.set(Long.valueOf(userId));

@@ -1,8 +1,6 @@
 server:
   port: 9000
 spring:
-  #  jackson:
-#    date-format: yyyy-MM-dd
   mvc:
     view:
       prefix: /
