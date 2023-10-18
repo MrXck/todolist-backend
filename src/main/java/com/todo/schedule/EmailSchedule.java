@@ -33,8 +33,8 @@ public class EmailSchedule {
     public void sendEmail() {
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         LocalDate now = LocalDate.now();
-        queryWrapper.ge(Todo::getStartTime, now);
-        queryWrapper.le(Todo::getEndTime, now);
+        queryWrapper.le(Todo::getStartTime, now);
+        queryWrapper.ge(Todo::getEndTime, now);
         queryWrapper.eq(Todo::getIsDone, false);
 
         List<Todo> list = todoService.list(queryWrapper);
