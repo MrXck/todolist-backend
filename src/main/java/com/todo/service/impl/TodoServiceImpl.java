@@ -128,8 +128,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         LocalDate currentDate = LocalDate.now();
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
-        queryWrapper.ge(Todo::getStartTime, currentDate + "-01");
-        queryWrapper.le(Todo::getStartTime, currentDate + "-31");
+        queryWrapper.le(Todo::getStartTime, currentDate);
+        queryWrapper.ge(Todo::getEndTime, currentDate);
         queryWrapper.eq(Todo::getIsDone, false);
         int count = this.count(queryWrapper);
         todoDTO.setCount(count);
