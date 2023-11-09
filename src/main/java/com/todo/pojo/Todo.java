@@ -10,6 +10,7 @@ public class Todo {
 
     private Long id;
     private Long userId;
+    private Long taskBoxId;
     private String title;
     private String detail;
     private Boolean isDone;
