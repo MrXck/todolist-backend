@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class TaskBox {
     private Long id;
     private String name;
+    private Long userId;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }
