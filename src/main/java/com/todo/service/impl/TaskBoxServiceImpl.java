@@ -70,4 +70,12 @@ public class TaskBoxServiceImpl extends ServiceImpl<TaskBoxMapper, TaskBox> impl
         updateWrapper.set(TaskBox::getName, name);
         this.update(updateWrapper);
     }
+
+    @Override
+    public void deleteById(Long taskBoxId) {
+        LambdaQueryWrapper<TaskBox> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TaskBox::getUserId, UserThreadLocal.get());
+        queryWrapper.eq(TaskBox::getId, taskBoxId);
+        this.remove(queryWrapper);
+    }
 }

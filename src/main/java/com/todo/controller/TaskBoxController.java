@@ -32,4 +32,10 @@ public class TaskBoxController {
         taskBoxService.updateTaskBoxById(updateTaskBoxDTO);
         return "";
     }
+
+    @GetMapping("/remove/{taskBoxId}")
+    public String remove(@PathVariable("taskBoxId") Long taskBoxId) {
+        taskBoxService.deleteById(taskBoxId);
+        return "";
+    }
 }

@@ -12,4 +12,6 @@ public interface TaskBoxService extends IService<TaskBox> {
     void add(AddTaskBoxDTO addTaskBoxDTO);
 
     void updateTaskBoxById(UpdateTaskBoxDTO updateTaskBoxDTO);
+
+    void deleteById(Long taskBoxId);
 }
