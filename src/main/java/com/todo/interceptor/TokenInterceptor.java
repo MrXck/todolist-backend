@@ -1,5 +1,7 @@
 package com.todo.interceptor;
 
+import cn.hutool.json.JSONUtil;
+import com.todo.common.R;
 import com.todo.utils.JwtUtils;
 import com.todo.utils.NoAuthorization;
 import com.todo.utils.UserThreadLocal;
@@ -52,6 +54,8 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
         //给客户端响应401状态码
         response.setStatus(401);
+        response.setContentType("application/json;charset=utf-8");
+        response.getWriter().write(JSONUtil.toJsonStr(R.error("请登录")));
         return false;
     }
 

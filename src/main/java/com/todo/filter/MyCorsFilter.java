@@ -23,6 +23,7 @@ public class MyCorsFilter implements Filter {
         httpServletResponse.setHeader("Access-Control-Allow-Headers",
                 "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With,userId,token,Authorization");
         httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
         chain.doFilter(request, response);
     }
 
