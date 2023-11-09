@@ -1,9 +1,11 @@
 package com.todo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.todo.dto.taskBox.AddTaskBoxDTO;
 import com.todo.dto.taskBox.TaskBoxDTO;
+import com.todo.dto.taskBox.UpdateTaskBoxDTO;
 import com.todo.exception.APIException;
 import com.todo.pojo.TaskBox;
 import com.todo.mapper.TaskBoxMapper;
@@ -46,5 +48,26 @@ public class TaskBoxServiceImpl extends ServiceImpl<TaskBoxMapper, TaskBox> impl
         taskBox.setCreateTime(LocalDateTime.now());
         taskBox.setUpdateTime(LocalDateTime.now());
         this.save(taskBox);
+    }
+
+    @Override
+    public void updateTaskBoxById(UpdateTaskBoxDTO updateTaskBoxDTO) {
+        String name = updateTaskBoxDTO.getName();
+        Long id = updateTaskBoxDTO.getId();
+
+        LambdaQueryWrapper<TaskBox> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(TaskBox::getName, name);
+        queryWrapper.eq(TaskBox::getUserId, UserThreadLocal.get());
+
+        if (this.count(queryWrapper) != 0) {
+            throw new APIException(Constant.TASK_BOX_ERROR);
+        }
+
+        LambdaUpdateWrapper<TaskBox> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(TaskBox::getId, id);
+        updateWrapper.eq(TaskBox::getUserId, UserThreadLocal.get());
+        updateWrapper.set(TaskBox::getName, name);
+        this.update(updateWrapper);
     }
 }

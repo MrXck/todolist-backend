@@ -2,6 +2,7 @@ package com.todo.controller;
 
 import com.todo.dto.taskBox.AddTaskBoxDTO;
 import com.todo.dto.taskBox.TaskBoxDTO;
+import com.todo.dto.taskBox.UpdateTaskBoxDTO;
 import com.todo.service.TaskBoxService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,12 @@ public class TaskBoxController {
     @PostMapping("/add")
     public String add(@RequestBody @Valid AddTaskBoxDTO addTaskBoxDTO) {
         taskBoxService.add(addTaskBoxDTO);
+        return "";
+    }
+
+    @PostMapping("/update")
+    public String update(@RequestBody @Valid UpdateTaskBoxDTO updateTaskBoxDTO) {
+        taskBoxService.updateTaskBoxById(updateTaskBoxDTO);
         return "";
     }
 }
