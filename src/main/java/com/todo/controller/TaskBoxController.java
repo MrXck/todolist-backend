@@ -38,4 +38,9 @@ public class TaskBoxController {
         taskBoxService.deleteById(taskBoxId);
         return "";
     }
+
+    @GetMapping("/getTodo/{taskBoxId}")
+    public TaskBoxDTO getTodo(@PathVariable("taskBoxId") Long taskBoxId) {
+        return taskBoxService.getTodo(taskBoxId);
+    }
 }

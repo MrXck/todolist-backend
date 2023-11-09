@@ -9,19 +9,27 @@ import com.todo.dto.taskBox.UpdateTaskBoxDTO;
 import com.todo.exception.APIException;
 import com.todo.pojo.TaskBox;
 import com.todo.mapper.TaskBoxMapper;
+import com.todo.pojo.Todo;
 import com.todo.service.TaskBoxService;
+import com.todo.service.TodoService;
 import com.todo.utils.Constant;
 import com.todo.utils.UserThreadLocal;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
 public class TaskBoxServiceImpl extends ServiceImpl<TaskBoxMapper, TaskBox> implements TaskBoxService {
+
+    @Autowired
+    private TodoService todoService;
+
     @Override
     public TaskBoxDTO all() {
         LambdaQueryWrapper<TaskBox> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(TaskBox::getUserId, UserThreadLocal.get());
+        queryWrapper.orderByDesc(TaskBox::getCreateTime);
 
         TaskBoxDTO taskBoxDTO = new TaskBoxDTO();
         taskBoxDTO.setTaskBoxes(this.list(queryWrapper));
@@ -77,5 +85,18 @@ public class TaskBoxServiceImpl extends ServiceImpl<TaskBoxMapper, TaskBox> impl
         queryWrapper.eq(TaskBox::getUserId, UserThreadLocal.get());
         queryWrapper.eq(TaskBox::getId, taskBoxId);
         this.remove(queryWrapper);
+    }
+
+    @Override
+    public TaskBoxDTO getTodo(Long taskBoxId) {
+        LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
+        queryWrapper.eq(Todo::getTaskBoxId, taskBoxId);
+        queryWrapper.orderByDesc(Todo::getCreateTime);
+
+        TaskBoxDTO taskBoxDTO = new TaskBoxDTO();
+        taskBoxDTO.setTodos(todoService.list(queryWrapper));
+
+        return taskBoxDTO;
     }
 }
