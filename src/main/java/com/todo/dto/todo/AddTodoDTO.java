@@ -17,6 +17,8 @@ public class AddTodoDTO {
 
     private String detail;
 
+    private Long taskBoxId;
+
     @NotNull(message = "是否完成不能为空")
     private Boolean isDone;
 

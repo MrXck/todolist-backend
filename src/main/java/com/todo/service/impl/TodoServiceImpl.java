@@ -32,7 +32,6 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             throw new APIException(Constant.DATE_ERROR);
         }
 
-
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getUserId, userId);
         queryWrapper.ge(Todo::getEndTime, startTime);
@@ -50,6 +49,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     public void updateTodoById(UpdateTodoDTO updateTodoDTO) {
         LocalDate startTime = updateTodoDTO.getStartTime();
         LocalDate endTime = updateTodoDTO.getEndTime();
+        Long taskBoxId = updateTodoDTO.getTaskBoxId();
         int i = startTime.compareTo(endTime);
         if (i > 0) {
             throw new APIException(Constant.DATE_ERROR);
@@ -65,12 +65,12 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(Todo::getStartTime, startTime);
         updateWrapper.set(Todo::getEndTime, endTime);
         updateWrapper.set(Todo::getUpdateTime, LocalDateTime.now());
+        updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
         this.update(updateWrapper);
     }
 
     @Override
     public Long add(AddTodoDTO addTodoDTO) {
-
         LocalDate startTime = addTodoDTO.getStartTime();
         LocalDate endTime = addTodoDTO.getEndTime();
         int i = startTime.compareTo(endTime);

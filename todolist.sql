@@ -11,7 +11,7 @@
  Target Server Version : 50644 (5.6.44)
  File Encoding         : 65001
 
- Date: 10/10/2023 08:57:34
+ Date: 10/11/2023 10:21:46
 */
 
 SET NAMES utf8mb4;
@@ -46,6 +46,19 @@ CREATE TABLE `note`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
+-- Table structure for task_box
+-- ----------------------------
+DROP TABLE IF EXISTS `task_box`;
+CREATE TABLE `task_box`  (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `create_time` datetime NOT NULL,
+  `update_time` datetime NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
 -- Table structure for todo
 -- ----------------------------
 DROP TABLE IF EXISTS `todo`;
@@ -60,6 +73,7 @@ CREATE TABLE `todo`  (
   `create_time` datetime NOT NULL,
   `update_time` datetime NOT NULL,
   `user_id` bigint(20) NOT NULL,
+  `task_box_id` bigint(20) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
