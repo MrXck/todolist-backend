@@ -19,6 +19,9 @@ public class Constant {
     public static final String FILE_NOT_FOUND = "文件不存在";
 
     public static final String DATE_ERROR = "开始时间不能在结束时间之后";
+    public static final String DATE_GENERATE_ERROR = "日期生成错误";
+    public static final String DATE_FORMAT = "yyyy-MM";
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd";
     public static final String NOT_FOUND_NOTE_ERROR = "没有这篇文章";
 
     public static final String SEND_TODO_EMAIL_SUBJECT = "今日待办事项";
@@ -26,5 +29,10 @@ public class Constant {
     public static final String CHECK_EMAIL_ERROR = "请输入正确的邮箱";
 
     public static final String TASK_BOX_ERROR = "已有相同名称的清单";
+
+
+    public static final Integer GENERATE_TYPE_DAY = 1;
+    public static final Integer GENERATE_TYPE_WEEK = 2;
+    public static final Integer GENERATE_TYPE_MONTH = 3;
 
 }

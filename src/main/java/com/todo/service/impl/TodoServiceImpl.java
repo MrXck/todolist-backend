@@ -10,12 +10,17 @@ import com.todo.mapper.TodoMapper;
 import com.todo.pojo.Todo;
 import com.todo.service.TodoService;
 import com.todo.utils.Constant;
+import com.todo.utils.DateUtils;
 import com.todo.utils.UserThreadLocal;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -100,7 +105,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         TodoDTO todoDTO = new TodoDTO();
 
         LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constant.DATE_FORMAT);
         String currentYearMonth = currentDate.format(formatter);
 
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
@@ -158,6 +163,66 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         int count = this.count(queryWrapper);
         todoDTO.setCount(count);
         return todoDTO;
+    }
+
+    @Override
+    public void batchGenerate(BatchGenerateTodoDTO batchGenerateTodoDTO) {
+        Integer generateType = batchGenerateTodoDTO.getGenerateType();
+        LocalDate startTime = batchGenerateTodoDTO.getStartTime();
+        LocalDate endTime = batchGenerateTodoDTO.getEndTime();
+
+        if (startTime.isAfter(endTime)) {
+            throw new APIException(Constant.DATE_ERROR);
+        }
+
+        String title = batchGenerateTodoDTO.getTitle();
+        String detail = batchGenerateTodoDTO.getDetail();
+        Integer priority = batchGenerateTodoDTO.getPriority();
+        Long taskBoxId = batchGenerateTodoDTO.getTaskBoxId();
+        Integer duration = batchGenerateTodoDTO.getDuration();
+        List<Integer> generateDateList = batchGenerateTodoDTO.getGenerateDateList();
+
+        List<Date> dates = null;
+        try {
+            if (generateType.equals(Constant.GENERATE_TYPE_DAY)) {
+                dates = DateUtils.generateDateWithDay(startTime.toString(), endTime.toString());
+            } else if (generateType.equals(Constant.GENERATE_TYPE_WEEK)) {
+                dates = DateUtils.generateDateWithWeek(startTime.toString(), endTime.toString(), generateDateList);
+            } else if (generateType.equals(Constant.GENERATE_TYPE_MONTH)) {
+                dates = DateUtils.generateDateWithMonth(startTime.toString(), endTime.toString(), generateDateList);
+            }
+        } catch (Exception e) {
+            throw new APIException(Constant.DATE_GENERATE_ERROR);
+        }
+
+        List<Todo> todos = new ArrayList<>();
+
+        Long userId = UserThreadLocal.get();
+
+        for (Date date : dates) {
+            SimpleDateFormat sdf = new SimpleDateFormat(Constant.DATE_TIME_FORMAT);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE, duration - 1);
+
+            Todo todo = new Todo();
+            todo.setUserId(userId);
+            todo.setTaskBoxId(taskBoxId);
+            todo.setTitle(title);
+            todo.setDetail(detail);
+            todo.setIsDone(false);
+            todo.setPriority(priority);
+
+            todo.setStartTime(LocalDate.parse(sdf.format(date)));
+            todo.setEndTime(LocalDate.parse(sdf.format(calendar.getTime())));
+
+            todo.setCreateTime(LocalDateTime.now());
+            todo.setUpdateTime(LocalDateTime.now());
+            todos.add(todo);
+
+        }
+
+        this.saveBatch(todos);
     }
 
 }

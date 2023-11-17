@@ -22,4 +22,6 @@ public interface TodoService extends IService<Todo> {
     TodoDTO getDelayTodo();
 
     TodoDTO getDoneTodo();
+
+    void batchGenerate(BatchGenerateTodoDTO batchGenerateTodoDTO);
 }
