@@ -170,6 +170,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void batchGenerate(BatchGenerateTodoDTO batchGenerateTodoDTO) {
         Integer generateType = batchGenerateTodoDTO.getGenerateType();
         LocalDate startTime = batchGenerateTodoDTO.getStartTime();
