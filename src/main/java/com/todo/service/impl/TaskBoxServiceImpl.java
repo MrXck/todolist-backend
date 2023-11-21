@@ -16,6 +16,7 @@ import com.todo.utils.Constant;
 import com.todo.utils.UserThreadLocal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -37,6 +38,7 @@ public class TaskBoxServiceImpl extends ServiceImpl<TaskBoxMapper, TaskBox> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void add(AddTaskBoxDTO addTaskBoxDTO) {
         String name = addTaskBoxDTO.getName();
 
@@ -59,6 +61,7 @@ public class TaskBoxServiceImpl extends ServiceImpl<TaskBoxMapper, TaskBox> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateTaskBoxById(UpdateTaskBoxDTO updateTaskBoxDTO) {
         String name = updateTaskBoxDTO.getName();
         Long id = updateTaskBoxDTO.getId();
@@ -80,6 +83,7 @@ public class TaskBoxServiceImpl extends ServiceImpl<TaskBoxMapper, TaskBox> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(Long taskBoxId) {
         LambdaQueryWrapper<TaskBox> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(TaskBox::getUserId, UserThreadLocal.get());

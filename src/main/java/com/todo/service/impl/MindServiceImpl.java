@@ -14,6 +14,7 @@ import com.todo.pojo.Mind;
 import com.todo.service.MindService;
 import com.todo.utils.UserThreadLocal;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -34,6 +35,7 @@ public class MindServiceImpl extends ServiceImpl<MindMapper, Mind> implements Mi
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void add(AddMindDTO addMindDTO) {
         Mind mind = new Mind();
         mind.setName(addMindDTO.getName());
@@ -61,6 +63,7 @@ public class MindServiceImpl extends ServiceImpl<MindMapper, Mind> implements Mi
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(Long mindId) {
         LambdaQueryWrapper<Mind> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Mind::getUserId, UserThreadLocal.get());
@@ -70,6 +73,7 @@ public class MindServiceImpl extends ServiceImpl<MindMapper, Mind> implements Mi
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateMind(UpdateMindDTO updateMindDTO) {
         LambdaUpdateWrapper<Mind> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Mind::getUserId, UserThreadLocal.get());

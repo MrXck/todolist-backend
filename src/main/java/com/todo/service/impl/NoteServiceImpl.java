@@ -16,6 +16,7 @@ import com.todo.service.NoteService;
 import com.todo.utils.Constant;
 import com.todo.utils.UserThreadLocal;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements NoteService {
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void add(AddNoteDTO addNoteDTO) {
         Note note = new Note();
         note.setTitle(addNoteDTO.getTitle());
@@ -50,6 +52,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(Long noteId) {
         LambdaQueryWrapper<Note> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Note::getUserId, UserThreadLocal.get());
@@ -59,6 +62,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateNote(UpdateNoteDTO updateNoteDTO) {
         LambdaUpdateWrapper<Note> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Note::getUserId, UserThreadLocal.get());

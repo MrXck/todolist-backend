@@ -13,6 +13,7 @@ import com.todo.service.UserService;
 import com.todo.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateUser(UpdateUserDTO updateUserDTO) {
         String username = updateUserDTO.getUsername();
         String password = updateUserDTO.getPassword();
@@ -81,6 +83,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void register(RegisterUserDTO registerUser) {
         String username = registerUser.getUsername();
         String password = registerUser.getPassword();

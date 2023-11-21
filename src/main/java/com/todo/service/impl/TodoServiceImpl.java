@@ -13,6 +13,7 @@ import com.todo.utils.Constant;
 import com.todo.utils.DateUtils;
 import com.todo.utils.UserThreadLocal;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -51,6 +52,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateTodoById(UpdateTodoDTO updateTodoDTO) {
         LocalDate startTime = updateTodoDTO.getStartTime();
         LocalDate endTime = updateTodoDTO.getEndTime();
@@ -75,6 +77,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long add(AddTodoDTO addTodoDTO) {
         LocalDate startTime = addTodoDTO.getStartTime();
         LocalDate endTime = addTodoDTO.getEndTime();
@@ -93,6 +96,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(Long todoId) {
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getId, todoId);
