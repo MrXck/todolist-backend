@@ -40,7 +40,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
 
         String token = request.getHeader("Authorization");
-        if (!token.isEmpty()) {
+        if (token != null && !token.isEmpty()) {
             try {
                 String userId = jwtUtils.checkToken(token);
                 UserThreadLocal.set(Long.valueOf(userId));
