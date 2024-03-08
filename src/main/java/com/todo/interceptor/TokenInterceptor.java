@@ -46,7 +46,7 @@ public class TokenInterceptor implements HandlerInterceptor {
                 UserThreadLocal.set(Long.valueOf(userId));
                 Map<String, Object> claims = new HashMap<>(16);
                 claims.put("userId", UserThreadLocal.get());
-                response.setHeader("Authorization", jwtUtils.createToken(claims, 1));
+                response.setHeader("Authorization", jwtUtils.createToken(claims, 720));
                 return true;
             } catch (Exception ignored) {
 

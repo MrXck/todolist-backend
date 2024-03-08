@@ -27,15 +27,13 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String update(@RequestBody @Valid UpdateUserDTO updateUserDTO) {
+    public void update(@RequestBody @Valid UpdateUserDTO updateUserDTO) {
         userService.updateUser(updateUserDTO);
-        return "";
     }
 
     @PostMapping("/register")
     @NoAuthorization
-    public String register(@RequestBody @Valid RegisterUserDTO registerUser) {
+    public void register(@RequestBody @Valid RegisterUserDTO registerUser) {
         userService.register(registerUser);
-        return "";
     }
 }

@@ -18,9 +18,8 @@ public class NoteController {
     private NoteService noteService;
 
     @PostMapping("/add")
-    public String add(@RequestBody @Valid AddNoteDTO addNoteDTO) {
+    public void add(@RequestBody @Valid AddNoteDTO addNoteDTO) {
         noteService.add(addNoteDTO);
-        return "";
     }
 
     @PostMapping("/getByPage")
@@ -29,15 +28,13 @@ public class NoteController {
     }
 
     @PostMapping("/remove/{noteId}")
-    public String removeById(@PathVariable("noteId") Long noteId) {
+    public void removeById(@PathVariable("noteId") Long noteId) {
         noteService.deleteById(noteId);
-        return "";
     }
 
     @PostMapping("/update")
-    public String update(@RequestBody @Valid UpdateNoteDTO updateNoteDTO) {
+    public void update(@RequestBody @Valid UpdateNoteDTO updateNoteDTO) {
         noteService.updateNote(updateNoteDTO);
-        return "";
     }
 
     @GetMapping("/{noteId}")

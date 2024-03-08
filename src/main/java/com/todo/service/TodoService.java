@@ -24,4 +24,8 @@ public interface TodoService extends IService<Todo> {
     TodoDTO getDoneTodo();
 
     void batchGenerate(BatchGenerateTodoDTO batchGenerateTodoDTO);
+
+    void startTodo(Long todoId);
+
+    void endTodo(Long todoId);
 }

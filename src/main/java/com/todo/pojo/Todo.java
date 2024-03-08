@@ -19,4 +19,6 @@ public class Todo {
     private LocalDate endTime;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private LocalDateTime startDoTime;
+    private LocalDateTime endDoTime;
 }

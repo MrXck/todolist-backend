@@ -22,21 +22,18 @@ public class TaskBoxController {
     }
 
     @PostMapping("/add")
-    public String add(@RequestBody @Valid AddTaskBoxDTO addTaskBoxDTO) {
+    public void add(@RequestBody @Valid AddTaskBoxDTO addTaskBoxDTO) {
         taskBoxService.add(addTaskBoxDTO);
-        return "";
     }
 
     @PostMapping("/update")
-    public String update(@RequestBody @Valid UpdateTaskBoxDTO updateTaskBoxDTO) {
+    public void update(@RequestBody @Valid UpdateTaskBoxDTO updateTaskBoxDTO) {
         taskBoxService.updateTaskBoxById(updateTaskBoxDTO);
-        return "";
     }
 
     @GetMapping("/remove/{taskBoxId}")
-    public String remove(@PathVariable("taskBoxId") Long taskBoxId) {
+    public void remove(@PathVariable("taskBoxId") Long taskBoxId) {
         taskBoxService.deleteById(taskBoxId);
-        return "";
     }
 
     @GetMapping("/getTodo/{taskBoxId}")

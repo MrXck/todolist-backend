@@ -26,6 +26,10 @@ public class Constant {
 
     public static final String SEND_TODO_EMAIL_SUBJECT = "今日待办事项";
 
+    public static final String TODO_START_TODO_ERROR = "待办事项开始后就不能修改开始时间了";
+
+    public static final String TODO_END_TODO_ERROR = "待办事项结束后就不能修改开始时间了";
+
     public static final String CHECK_EMAIL_ERROR = "请输入正确的邮箱";
 
     public static final String TASK_BOX_ERROR = "已有相同名称的清单";

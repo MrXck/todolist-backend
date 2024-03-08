@@ -20,9 +20,8 @@ public class TodoController {
     }
 
     @PostMapping("/updateById")
-    public String updateById(@RequestBody @Valid UpdateTodoDTO updateTodoDTO) {
+    public void updateById(@RequestBody @Valid UpdateTodoDTO updateTodoDTO) {
         todoService.updateTodoById(updateTodoDTO);
-        return "";
     }
 
     @PostMapping("/addTodo")
@@ -31,9 +30,8 @@ public class TodoController {
     }
 
     @PostMapping("/removeTodoById/{todoId}")
-    public String removeTodoById(@PathVariable Long todoId) {
+    public void removeTodoById(@PathVariable Long todoId) {
         todoService.deleteById(todoId);
-        return "";
     }
 
     @GetMapping("/getThisMonthTodo")
@@ -62,9 +60,18 @@ public class TodoController {
     }
 
     @PostMapping("/batchGenerateTodo")
-    public String batchGenerateTodo(@RequestBody @Valid BatchGenerateTodoDTO batchGenerateTodoDTO) {
+    public void batchGenerateTodo(@RequestBody @Valid BatchGenerateTodoDTO batchGenerateTodoDTO) {
         todoService.batchGenerate(batchGenerateTodoDTO);
-        return "";
+    }
+
+    @PostMapping("/startTodo/{todoId}")
+    public void startTodo(@PathVariable Long todoId) {
+        todoService.startTodo(todoId);
+    }
+
+    @PostMapping("/endTodo/{todoId}")
+    public void endTodo(@PathVariable Long todoId) {
+        todoService.endTodo(todoId);
     }
 
 }

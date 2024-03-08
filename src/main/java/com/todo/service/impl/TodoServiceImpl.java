@@ -230,4 +230,34 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         this.saveBatch(todos);
     }
 
+    @Override
+    public void startTodo(Long todoId) {
+        Todo todo = this.getById(todoId);
+
+        if (todo.getStartDoTime() != null) {
+            throw new APIException(Constant.TODO_START_TODO_ERROR);
+        }
+
+        LambdaUpdateWrapper<Todo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Todo::getUserId, UserThreadLocal.get());
+        updateWrapper.eq(Todo::getId, todoId);
+        updateWrapper.set(Todo::getStartDoTime, LocalDateTime.now());
+        this.update(updateWrapper);
+    }
+
+    @Override
+    public void endTodo(Long todoId) {
+        Todo todo = this.getById(todoId);
+
+        if (todo.getEndDoTime() != null) {
+            throw new APIException(Constant.TODO_END_TODO_ERROR);
+        }
+
+        LambdaUpdateWrapper<Todo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Todo::getUserId, UserThreadLocal.get());
+        updateWrapper.eq(Todo::getId, todoId);
+        updateWrapper.set(Todo::getEndDoTime, LocalDateTime.now());
+        this.update(updateWrapper);
+    }
+
 }

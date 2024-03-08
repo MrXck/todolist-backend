@@ -23,9 +23,8 @@ public class MindController {
     }
 
     @PostMapping("/add")
-    public String add(@RequestBody @Valid AddMindDTO addMindDTO) {
+    public void add(@RequestBody @Valid AddMindDTO addMindDTO) {
         mindService.add(addMindDTO);
-        return "";
     }
 
     @PostMapping("/getByPage")
@@ -34,15 +33,13 @@ public class MindController {
     }
 
     @PostMapping("/remove/{mindId}")
-    public String removeById(@PathVariable("mindId") Long mindId) {
+    public void removeById(@PathVariable("mindId") Long mindId) {
         mindService.deleteById(mindId);
-        return "";
     }
 
     @PostMapping("/update")
-    public String update(@RequestBody @Valid UpdateMindDTO updateMindDTO) {
+    public void update(@RequestBody @Valid UpdateMindDTO updateMindDTO) {
         mindService.updateMind(updateMindDTO);
-        return "";
     }
 
 }
