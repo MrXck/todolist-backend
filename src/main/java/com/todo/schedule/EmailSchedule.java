@@ -50,11 +50,11 @@ public class EmailSchedule {
 
             if (!map.containsKey(userId)) {
                 ArrayList<String> detail = new ArrayList<>();
-                detail.add("1. " + todo.getTitle() + "\n\t" + todo.getDetail().replace("\n", "\n\t"));
+                detail.add("1. " + todo.getTitle() + "\n    " + todo.getDetail().replace("\n", "\n    "));
                 map.put(userId, detail);
             } else {
                 List<String> strings = map.get(userId);
-                strings.add(strings.size() + 1 + ". " + todo.getTitle() + "\n\t" + todo.getDetail().replace("\n", "\n\t"));
+                strings.add(strings.size() + 1 + ". " + todo.getTitle() + "\n    " + todo.getDetail().replace("\n", "\n    "));
             }
         }
 
