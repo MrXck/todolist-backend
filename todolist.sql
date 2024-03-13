@@ -11,7 +11,7 @@
  Target Server Version : 50644 (5.6.44)
  File Encoding         : 65001
 
- Date: 08/03/2024 14:51:18
+ Date: 13/03/2024 17:59:10
 */
 
 SET NAMES utf8mb4;
@@ -76,6 +76,7 @@ CREATE TABLE `todo`  (
   `task_box_id` bigint(20) NULL DEFAULT NULL,
   `start_do_time` datetime NULL DEFAULT NULL,
   `end_do_time` datetime NULL DEFAULT NULL,
+  `predict_time` time NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 

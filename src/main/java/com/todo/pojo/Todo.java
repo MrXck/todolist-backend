@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 public class Todo {
@@ -21,4 +22,5 @@ public class Todo {
     private LocalDateTime updateTime;
     private LocalDateTime startDoTime;
     private LocalDateTime endDoTime;
+    private LocalTime predictTime;
 }

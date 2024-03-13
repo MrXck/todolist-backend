@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -72,6 +73,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(Todo::getStartTime, startTime);
         updateWrapper.set(Todo::getEndTime, endTime);
         updateWrapper.set(Todo::getUpdateTime, LocalDateTime.now());
+        updateWrapper.set(Todo::getPredictTime, updateTodoDTO.getPredictTime());
         updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
         this.update(updateWrapper);
     }
@@ -186,6 +188,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         Long taskBoxId = batchGenerateTodoDTO.getTaskBoxId();
         Integer duration = batchGenerateTodoDTO.getDuration();
         List<Integer> generateDateList = batchGenerateTodoDTO.getGenerateDateList();
+        LocalTime predictTime = batchGenerateTodoDTO.getPredictTime();
 
         List<Date> dates = null;
         try {
@@ -217,6 +220,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             todo.setDetail(detail);
             todo.setIsDone(false);
             todo.setPriority(priority);
+            todo.setPredictTime(predictTime);
 
             todo.setStartTime(LocalDate.parse(sdf.format(date)));
             todo.setEndTime(LocalDate.parse(sdf.format(calendar.getTime())));

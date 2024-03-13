@@ -1,6 +1,7 @@
 package com.todo.dto.todo;
 
 import com.todo.valid.ValidLocalDate;
+import com.todo.valid.ValidLocalTime;
 import lombok.Data;
 
 import javax.validation.constraints.Max;
@@ -8,6 +9,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 public class UpdateTodoDTO {
@@ -35,4 +37,7 @@ public class UpdateTodoDTO {
 
     @ValidLocalDate(message = "结束时间不能为空")
     private LocalDate endTime;
+
+    @ValidLocalTime(message = "预计开始时间不能为空")
+    private LocalTime predictTime;
 }
