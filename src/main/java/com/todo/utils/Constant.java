@@ -39,4 +39,6 @@ public class Constant {
     public static final Integer GENERATE_TYPE_WEEK = 2;
     public static final Integer GENERATE_TYPE_MONTH = 3;
 
+    public static final String QUARTZ_TASK_PATH = "com.todo.task.AutomaticTask";
+
 }

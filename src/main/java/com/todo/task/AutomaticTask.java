@@ -20,6 +20,10 @@ public class AutomaticTask implements Job {
         TodoService todoService = SpringUtils.getBean(TodoService.class);
         Todo todo = todoService.getById(jobExecutionContext.getJobDetail().getKey().getName());
 
+        if (todo.getIsDone()) {
+            return;
+        }
+
         UserService userService = SpringUtils.getBean(UserService.class);
         User user = userService.getById(todo.getUserId());
 

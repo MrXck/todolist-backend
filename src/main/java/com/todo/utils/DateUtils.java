@@ -1,6 +1,8 @@
 package com.todo.utils;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 public class DateUtils {
@@ -88,6 +90,12 @@ public class DateUtils {
         }
 
         return result;
+    }
+
+    public static Date generateDateWithLocalDateAndLocalTime(LocalDate localDate, LocalTime localTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(localDate.getYear(), localDate.getMonth().getValue() + 1, localDate.getDayOfMonth(), localTime.getHour(), localTime.getMinute(), 0);
+        return calendar.getTime();
     }
 
 }
