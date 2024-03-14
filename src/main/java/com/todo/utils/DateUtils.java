@@ -94,7 +94,7 @@ public class DateUtils {
 
     public static Date generateDateWithLocalDateAndLocalTime(LocalDate localDate, LocalTime localTime) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(localDate.getYear(), localDate.getMonth().getValue() + 1, localDate.getDayOfMonth(), localTime.getHour(), localTime.getMinute(), 0);
+        calendar.set(localDate.getYear(), localDate.getMonth().getValue() - 1, localDate.getDayOfMonth(), localTime.getHour(), localTime.getMinute(), 0);
         return calendar.getTime();
     }
 

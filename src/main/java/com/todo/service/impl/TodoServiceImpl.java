@@ -9,9 +9,13 @@ import com.todo.exception.APIException;
 import com.todo.mapper.TodoMapper;
 import com.todo.pojo.Todo;
 import com.todo.service.TodoService;
+import com.todo.task.Schedule;
 import com.todo.utils.Constant;
 import com.todo.utils.DateUtils;
+import com.todo.utils.QuartzUtils;
 import com.todo.utils.UserThreadLocal;
+import org.quartz.Scheduler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +31,9 @@ import java.util.List;
 
 @Service
 public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements TodoService {
+
+    @Autowired
+    private Scheduler scheduler;
 
     @Override
     public TodoDTO getByMonth(GetTodoDTO getTodoDTO) {
@@ -76,6 +83,9 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(Todo::getPredictTime, updateTodoDTO.getPredictTime());
         updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
         this.update(updateWrapper);
+
+        QuartzUtils.deleteScheduleJob(scheduler, updateTodoDTO.getId().toString());
+        QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(updateTodoDTO.getId(), updateTodoDTO.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(updateTodoDTO.getStartTime(), updateTodoDTO.getPredictTime())), Constant.QUARTZ_TASK_PATH);
     }
 
     @Override
@@ -94,6 +104,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setCreateTime(LocalDateTime.now());
         todo.setUpdateTime(LocalDateTime.now());
         this.save(todo);
+        QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), addTodoDTO.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(addTodoDTO.getStartTime(), addTodoDTO.getPredictTime())), Constant.QUARTZ_TASK_PATH);
         return todo.getId();
     }
 
@@ -104,6 +115,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         queryWrapper.eq(Todo::getId, todoId);
         queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
         this.remove(queryWrapper);
+        QuartzUtils.deleteScheduleJob(scheduler, todoId.toString());
     }
 
     @Override
@@ -232,6 +244,9 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         }
 
         this.saveBatch(todos);
+        for (Todo todo : todos) {
+            QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
+        }
     }
 
     @Override

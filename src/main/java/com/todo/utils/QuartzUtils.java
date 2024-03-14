@@ -68,7 +68,7 @@ public class QuartzUtils {
      * @param taskClassPath 定时任务类全限定名
      * @throws Exception
      */
-    public static void createScheduleJobWithDateTime(Scheduler scheduler, Schedule schedule, Date date, String taskClassPath) {
+    public static void createScheduleJobWithDateTime(Scheduler scheduler, Schedule schedule, String taskClassPath) {
         try {
             //获取到定时任务的执行类  必须是类的绝对路径名称
             //定时任务类需要是job类的具体实现 QuartzJobBean是job的抽象类。
@@ -82,7 +82,7 @@ public class QuartzUtils {
             // 构建触发器trigger
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(schedule.getId().toString())
-                    .startAt(date)
+                    .startAt(schedule.getDate())
                     .build();
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (ClassNotFoundException e) {
