@@ -8,11 +8,12 @@ import com.todo.dto.todo.*;
 import com.todo.exception.APIException;
 import com.todo.mapper.TodoMapper;
 import com.todo.pojo.Todo;
-import com.todo.pojo.User;
 import com.todo.service.TodoService;
-import com.todo.service.UserService;
 import com.todo.task.Schedule;
-import com.todo.utils.*;
+import com.todo.utils.Constant;
+import com.todo.utils.DateUtils;
+import com.todo.utils.QuartzUtils;
+import com.todo.utils.UserThreadLocal;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,56 +24,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements TodoService {
 
     @Autowired
     private Scheduler scheduler;
-
-    @Autowired
-    private UserService userService;
-
-    {
-        LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Todo::getIsDone, false);
-        queryWrapper.ge(Todo::getStartTime, LocalDateTime.now());
-        queryWrapper.ge(Todo::getPredictTime, LocalTime.now());
-        List<Todo> todoList = this.list(queryWrapper);
-
-        Map<Long, List<Todo>> map = new HashMap<>();
-        Set<Long> userIds = new HashSet<>();
-        for (Todo todo : todoList) {
-            Long userId = todo.getUserId();
-            if (map.containsKey(userId)) {
-                map.get(userId).add(todo);
-            } else {
-                List<Todo> todos = new ArrayList<>();
-                todos.add(todo);
-                map.put(userId, todos);
-            }
-            userIds.add(userId);
-        }
-
-        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        userLambdaQueryWrapper.in(User::getId, userIds);
-        List<User> users = userService.list(userLambdaQueryWrapper);
-
-        for (User user : users) {
-            String email = user.getEmail();
-            if (!EmailValidatorUtils.isValid(email)) {
-                continue;
-            }
-
-            List<Todo> todos = map.get(user.getId());
-
-            for (Todo todo : todos) {
-                QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
-            }
-        }
-
-    }
 
     @Override
     public TodoDTO getByMonth(GetTodoDTO getTodoDTO) {
