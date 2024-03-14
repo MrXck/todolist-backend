@@ -123,8 +123,17 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
         this.update(updateWrapper);
 
-        QuartzUtils.deleteScheduleJob(scheduler, updateTodoDTO.getId().toString());
-        QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(updateTodoDTO.getId(), updateTodoDTO.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(updateTodoDTO.getStartTime(), updateTodoDTO.getPredictTime())), Constant.QUARTZ_TASK_PATH);
+        try {
+            QuartzUtils.deleteScheduleJob(scheduler, updateTodoDTO.getId().toString());
+        } catch (Exception ignored) {
+
+        }
+        Todo todo = new Todo();
+        todo.setId(updateTodoDTO.getId());
+        todo.setTitle(updateTodoDTO.getTitle());
+        todo.setStartTime(updateTodoDTO.getStartTime());
+        todo.setPredictTime(updateTodoDTO.getPredictTime());
+        addQuartz(todo);
     }
 
     @Override
@@ -143,7 +152,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setCreateTime(LocalDateTime.now());
         todo.setUpdateTime(LocalDateTime.now());
         this.save(todo);
-        QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), addTodoDTO.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(addTodoDTO.getStartTime(), addTodoDTO.getPredictTime())), Constant.QUARTZ_TASK_PATH);
+        addQuartz(todo);
         return todo.getId();
     }
 
@@ -283,8 +292,11 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         }
 
         this.saveBatch(todos);
+        if (!isCanAddQuartz(startTime, predictTime)) {
+            return;
+        }
         for (Todo todo : todos) {
-            QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
+            addQuartz(todo);
         }
     }
 
@@ -316,6 +328,23 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.eq(Todo::getId, todoId);
         updateWrapper.set(Todo::getEndDoTime, LocalDateTime.now());
         this.update(updateWrapper);
+    }
+
+    public boolean isCanAddQuartz(LocalDate startTime, LocalTime predictTime) {
+        LocalDate now = LocalDate.now();
+
+        if (startTime.isBefore(now)) {
+            return false;
+        }
+
+        return startTime.isEqual(now) && predictTime.isAfter(LocalTime.now());
+    }
+
+    public void addQuartz(Todo todo) {
+        if (!isCanAddQuartz(todo.getStartTime(), todo.getPredictTime())) {
+            return;
+        }
+        QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
     }
 
 }
