@@ -3,6 +3,7 @@ package com.todo.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.todo.dto.todo.*;
 import com.todo.pojo.Todo;
+import org.quartz.Scheduler;
 
 public interface TodoService extends IService<Todo> {
     TodoDTO getByMonth(GetTodoDTO getTodoDTO);
@@ -28,4 +29,6 @@ public interface TodoService extends IService<Todo> {
     void startTodo(Long todoId);
 
     void endTodo(Long todoId);
+
+    void addQuartz(Scheduler scheduler, Todo todo);
 }

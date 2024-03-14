@@ -94,7 +94,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setTitle(updateTodoDTO.getTitle());
         todo.setStartTime(updateTodoDTO.getStartTime());
         todo.setPredictTime(updateTodoDTO.getPredictTime());
-        addQuartz(todo);
+        addQuartz(scheduler, todo);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setCreateTime(LocalDateTime.now());
         todo.setUpdateTime(LocalDateTime.now());
         this.save(todo);
-        addQuartz(todo);
+        addQuartz(scheduler, todo);
         return todo.getId();
     }
 
@@ -257,7 +257,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             return;
         }
         for (Todo todo : todos) {
-            addQuartz(todo);
+            addQuartz(scheduler, todo);
         }
     }
 
@@ -301,7 +301,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         return startTime.isEqual(now) && predictTime.isAfter(LocalTime.now());
     }
 
-    public void addQuartz(Todo todo) {
+    public void addQuartz(Scheduler scheduler, Todo todo) {
         if (!isCanAddQuartz(todo.getStartTime(), todo.getPredictTime())) {
             return;
         }
