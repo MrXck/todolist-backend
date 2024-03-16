@@ -76,7 +76,6 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
 
     @Override
     public NoteDTO get(Long noteId) {
-
         LambdaQueryWrapper<Note> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Note::getUserId, UserThreadLocal.get());
         queryWrapper.eq(Note::getId, noteId);

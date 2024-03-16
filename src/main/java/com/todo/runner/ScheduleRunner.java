@@ -25,7 +25,7 @@ public class ScheduleRunner implements CommandLineRunner {
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getIsDone, false);
         queryWrapper.ge(Todo::getStartTime, LocalDate.now());
-        queryWrapper.ge(Todo::getPredictTime, LocalTime.now());
+        queryWrapper.gt(Todo::getPredictTime, LocalTime.now());
         List<Todo> todoList = todoService.list(queryWrapper);
 
         Map<Long, List<Todo>> map = new HashMap<>();

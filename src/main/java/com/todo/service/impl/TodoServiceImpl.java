@@ -82,7 +82,11 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(Todo::getUpdateTime, LocalDateTime.now());
         updateWrapper.set(Todo::getPredictTime, updateTodoDTO.getPredictTime());
         updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
-        this.update(updateWrapper);
+        boolean b = this.update(updateWrapper);
+
+        if (!b) {
+            return;
+        }
 
         try {
             QuartzUtils.deleteScheduleJob(scheduler, updateTodoDTO.getId().toString());
@@ -123,8 +127,10 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getId, todoId);
         queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
-        this.remove(queryWrapper);
-        QuartzUtils.deleteScheduleJob(scheduler, todoId.toString());
+        boolean b = this.remove(queryWrapper);
+        if (b) {
+            QuartzUtils.deleteScheduleJob(scheduler, todoId.toString());
+        }
     }
 
     @Override
@@ -211,7 +217,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         List<Integer> generateDateList = batchGenerateTodoDTO.getGenerateDateList();
         LocalTime predictTime = batchGenerateTodoDTO.getPredictTime();
 
-        List<Date> dates = null;
+        List<Date> dates = new ArrayList<>();
         try {
             if (generateType.equals(Constant.GENERATE_TYPE_DAY)) {
                 dates = DateUtils.generateDateWithDay(startTime.toString(), endTime.toString());

@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 public class MindServiceImpl extends ServiceImpl<MindMapper, Mind> implements MindService {
     @Override
     public MindDTO getMindById(Long mindId) {
-
         LambdaQueryWrapper<Mind> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Mind::getId, mindId);
         queryWrapper.eq(Mind::getUserId, UserThreadLocal.get());
