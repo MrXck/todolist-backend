@@ -322,7 +322,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
     public void addQuartz(Scheduler scheduler, Todo todo) {
         // 判断该待办事项是否已经完成
-        if (todo.getIsDone()) {
+        Boolean isDone = todo.getIsDone();
+        if (isDone != null && isDone) {
             return;
         }
 
