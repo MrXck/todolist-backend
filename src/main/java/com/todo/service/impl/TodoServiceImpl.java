@@ -41,11 +41,13 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         LocalDate startTime = getTodoDTO.getStartTime();
         LocalDate endTime = getTodoDTO.getEndTime();
 
+        // 判断开始日期是否在结束日期之后
         int i = startTime.compareTo(endTime);
         if (i > 0) {
             throw new APIException(Constant.DATE_ERROR);
         }
 
+        // 查询待办事项
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getUserId, userId);
         queryWrapper.ge(Todo::getEndTime, startTime);
@@ -65,11 +67,14 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         LocalDate startTime = updateTodoDTO.getStartTime();
         LocalDate endTime = updateTodoDTO.getEndTime();
         Long taskBoxId = updateTodoDTO.getTaskBoxId();
+
+        // 判断开始日期是否在结束日期之后
         int i = startTime.compareTo(endTime);
         if (i > 0) {
             throw new APIException(Constant.DATE_ERROR);
         }
 
+        // 修改待办事项设置
         LambdaUpdateWrapper<Todo> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Todo::getUserId, UserThreadLocal.get());
         updateWrapper.eq(Todo::getId, updateTodoDTO.getId());
@@ -89,6 +94,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         }
 
         try {
+            // 删除定时任务中该的待办事项的提醒
             QuartzUtils.deleteScheduleJob(scheduler, updateTodoDTO.getId().toString());
         } catch (Exception ignored) {
 
@@ -98,6 +104,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setTitle(updateTodoDTO.getTitle());
         todo.setStartTime(updateTodoDTO.getStartTime());
         todo.setPredictTime(updateTodoDTO.getPredictTime());
+
+        // 添加到定时任务中
         addQuartz(scheduler, todo);
     }
 
@@ -106,6 +114,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     public Long add(AddTodoDTO addTodoDTO) {
         LocalDate startTime = addTodoDTO.getStartTime();
         LocalDate endTime = addTodoDTO.getEndTime();
+
+        // 判断开始日期是否在结束日期之后
         int i = startTime.compareTo(endTime);
         if (i > 0) {
             throw new APIException(Constant.DATE_ERROR);
@@ -117,6 +127,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setCreateTime(LocalDateTime.now());
         todo.setUpdateTime(LocalDateTime.now());
         this.save(todo);
+
+        // 添加到定时任务中
         addQuartz(scheduler, todo);
         return todo.getId();
     }
@@ -217,6 +229,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         List<Integer> generateDateList = batchGenerateTodoDTO.getGenerateDateList();
         LocalTime predictTime = batchGenerateTodoDTO.getPredictTime();
 
+        // 根据生成参数生成日期列表
         List<Date> dates = new ArrayList<>();
         try {
             if (generateType.equals(Constant.GENERATE_TYPE_DAY)) {
@@ -308,6 +321,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     public void addQuartz(Scheduler scheduler, Todo todo) {
+        // 判断该待办事项是否已经完成
         if (todo.getIsDone()) {
             return;
         }
