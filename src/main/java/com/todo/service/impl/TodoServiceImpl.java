@@ -308,6 +308,10 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     public void addQuartz(Scheduler scheduler, Todo todo) {
+        if (todo.getIsDone()) {
+            return;
+        }
+
         if (!isCanAddQuartz(todo.getStartTime(), todo.getPredictTime())) {
             return;
         }
