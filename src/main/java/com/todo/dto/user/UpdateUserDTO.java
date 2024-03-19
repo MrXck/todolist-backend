@@ -3,6 +3,7 @@ package com.todo.dto.user;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class UpdateUserDTO {
@@ -14,5 +15,8 @@ public class UpdateUserDTO {
     private String password;
 
     private String email;
+
+    @NotNull(message = "是否开启邮件提醒不能为空")
+    private Boolean enableEmail;
 
 }

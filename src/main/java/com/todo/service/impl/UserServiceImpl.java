@@ -76,6 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         updateWrapper.eq(User::getId, UserThreadLocal.get());
         updateWrapper.set(User::getUsername, username);
         updateWrapper.set(User::getPassword, MD5Utils.md5(password));
+        updateWrapper.set(User::getEnableEmail, updateUserDTO.getEnableEmail());
         updateWrapper.set(User::getUpdateTime, LocalDateTime.now());
         updateWrapper.set(email != null, User::getEmail, email);
 
@@ -99,6 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user = new User();
         user.setUsername(username);
         user.setPassword(MD5Utils.md5(password));
+        user.setEnableEmail(Constant.DISABLE_EMAIL);
         user.setUpdateTime(LocalDateTime.now());
         user.setCreateTime(LocalDateTime.now());
         this.save(user);

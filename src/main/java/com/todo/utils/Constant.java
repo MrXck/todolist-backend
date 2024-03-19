@@ -14,6 +14,9 @@ public class Constant {
 
     public static final String LOGIN_ERROR = "用户名或密码错误";
     public static final String USERNAME_ALREADY_ERROR = "用户名已存在";
+    public static final Boolean ENABLE_EMAIL = true;
+    public static final Boolean DISABLE_EMAIL = false;
+
 
 
     public static final String FILE_NOT_FOUND = "文件不存在";
