@@ -10,6 +10,7 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private Boolean enableEmail;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private LocalDateTime lastLoginTime;

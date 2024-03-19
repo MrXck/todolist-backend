@@ -18,9 +18,10 @@ public class Todo {
     private Integer priority;
     private LocalDate startTime;
     private LocalDate endTime;
+    private LocalTime predictTime;
+    private Boolean enableEmail;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private LocalDateTime startDoTime;
     private LocalDateTime endDoTime;
-    private LocalTime predictTime;
 }
