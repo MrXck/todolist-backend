@@ -86,6 +86,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(Todo::getEndTime, endTime);
         updateWrapper.set(Todo::getUpdateTime, LocalDateTime.now());
         updateWrapper.set(Todo::getPredictTime, updateTodoDTO.getPredictTime());
+        updateWrapper.set(Todo::getEnableEmail, updateTodoDTO.getEnableEmail());
         updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
         boolean b = this.update(updateWrapper);
 
@@ -124,6 +125,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         Todo todo = new Todo();
         BeanUtil.copyProperties(addTodoDTO, todo);
         todo.setUserId(UserThreadLocal.get());
+        todo.setEnableEmail(addTodoDTO.getEnableEmail());
         todo.setCreateTime(LocalDateTime.now());
         todo.setUpdateTime(LocalDateTime.now());
         this.save(todo);
@@ -228,6 +230,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         Integer duration = batchGenerateTodoDTO.getDuration();
         List<Integer> generateDateList = batchGenerateTodoDTO.getGenerateDateList();
         LocalTime predictTime = batchGenerateTodoDTO.getPredictTime();
+        Boolean enableEmail = batchGenerateTodoDTO.getEnableEmail();
 
         // 根据生成参数生成日期列表
         List<Date> dates = new ArrayList<>();
@@ -261,6 +264,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             todo.setIsDone(false);
             todo.setPriority(priority);
             todo.setPredictTime(predictTime);
+            todo.setEnableEmail(enableEmail);
 
             todo.setStartTime(LocalDate.parse(sdf.format(date)));
             todo.setEndTime(LocalDate.parse(sdf.format(calendar.getTime())));

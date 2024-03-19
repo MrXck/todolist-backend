@@ -37,4 +37,7 @@ public class AddTodoDTO {
 
     @ValidLocalTime(message = "预计开始时间不能为空")
     private LocalTime predictTime;
+
+    @NotNull(message = "是否开启邮件提醒不能为空")
+    private Boolean enableEmail;
 }
