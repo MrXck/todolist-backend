@@ -8,7 +8,9 @@ import com.todo.dto.todo.*;
 import com.todo.exception.APIException;
 import com.todo.mapper.TodoMapper;
 import com.todo.pojo.Todo;
+import com.todo.pojo.User;
 import com.todo.service.TodoService;
+import com.todo.service.UserService;
 import com.todo.task.Schedule;
 import com.todo.utils.Constant;
 import com.todo.utils.DateUtils;
@@ -34,6 +36,9 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
     @Autowired
     private Scheduler scheduler;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public TodoDTO getByMonth(GetTodoDTO getTodoDTO) {
@@ -105,6 +110,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setTitle(updateTodoDTO.getTitle());
         todo.setStartTime(updateTodoDTO.getStartTime());
         todo.setPredictTime(updateTodoDTO.getPredictTime());
+        todo.setEnableEmail(updateTodoDTO.getEnableEmail());
 
         // 添加到定时任务中
         addQuartz(scheduler, todo);
@@ -125,7 +131,6 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         Todo todo = new Todo();
         BeanUtil.copyProperties(addTodoDTO, todo);
         todo.setUserId(UserThreadLocal.get());
-        todo.setEnableEmail(addTodoDTO.getEnableEmail());
         todo.setCreateTime(LocalDateTime.now());
         todo.setUpdateTime(LocalDateTime.now());
         this.save(todo);
@@ -311,7 +316,25 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         this.update(updateWrapper);
     }
 
-    public boolean canAddQuartz(LocalDate startTime, LocalTime predictTime) {
+    public boolean canAddQuartz(LocalDate startTime, LocalTime predictTime, Todo todo) {
+        // 判断该待办事项是否开启邮件提醒
+        Boolean enableEmail = todo.getEnableEmail();
+        if (Constant.DISABLE_EMAIL.equals(enableEmail)) {
+            return false;
+        }
+
+        // 获取用户然后判断该用户是否开启邮件提醒
+        User user = userService.getById(UserThreadLocal.get());
+        if (Constant.DISABLE_EMAIL.equals(user.getEnableEmail())) {
+            return false;
+        }
+
+        // 判断该待办事项是否已经完成
+        Boolean isDone = todo.getIsDone();
+        if (isDone != null && isDone) {
+            return false;
+        }
+
         LocalDate now = LocalDate.now();
 
         if (startTime.isBefore(now)) {
@@ -322,13 +345,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     public void addQuartz(Scheduler scheduler, Todo todo) {
-        // 判断该待办事项是否已经完成
-        Boolean isDone = todo.getIsDone();
-        if (isDone != null && isDone) {
-            return;
-        }
-
-        if (canAddQuartz(todo.getStartTime(), todo.getPredictTime())) {
+        if (canAddQuartz(todo.getStartTime(), todo.getPredictTime(), todo)) {
             QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
         }
     }

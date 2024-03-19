@@ -4,6 +4,7 @@ import com.todo.pojo.Todo;
 import com.todo.pojo.User;
 import com.todo.service.TodoService;
 import com.todo.service.UserService;
+import com.todo.utils.Constant;
 import com.todo.utils.EmailValidatorUtils;
 import com.todo.utils.MailUtils;
 import com.todo.utils.SpringUtils;
@@ -20,12 +21,20 @@ public class AutomaticTask implements Job {
         TodoService todoService = SpringUtils.getBean(TodoService.class);
         Todo todo = todoService.getById(jobExecutionContext.getJobDetail().getKey().getName());
 
+        if (Constant.DISABLE_EMAIL.equals(todo.getEnableEmail())) {
+            return;
+        }
+
         if (todo.getIsDone()) {
             return;
         }
 
         UserService userService = SpringUtils.getBean(UserService.class);
         User user = userService.getById(todo.getUserId());
+
+        if (Constant.DISABLE_EMAIL.equals(user.getEnableEmail())) {
+            return;
+        }
 
         if (!EmailValidatorUtils.isValid(user.getEmail())) {
             return;

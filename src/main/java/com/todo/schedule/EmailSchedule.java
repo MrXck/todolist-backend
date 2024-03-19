@@ -36,6 +36,7 @@ public class EmailSchedule {
         queryWrapper.le(Todo::getStartTime, now);
         queryWrapper.ge(Todo::getEndTime, now);
         queryWrapper.eq(Todo::getIsDone, false);
+        queryWrapper.eq(Todo::getEnableEmail, Constant.ENABLE_EMAIL);
 
         List<Todo> list = todoService.list(queryWrapper);
 
@@ -63,6 +64,9 @@ public class EmailSchedule {
         List<User> users = userService.list(queryWrapper1);
 
         for (User user : users) {
+            if (Constant.DISABLE_EMAIL.equals(user.getEnableEmail())) {
+                continue;
+            }
             String email = user.getEmail();
             if (email != null && !email.isEmpty()) {
                 try {
