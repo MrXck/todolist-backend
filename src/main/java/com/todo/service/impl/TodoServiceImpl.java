@@ -272,9 +272,6 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         }
 
         this.saveBatch(todos);
-        if (!isCanAddQuartz(startTime, predictTime)) {
-            return;
-        }
         for (Todo todo : todos) {
             addQuartz(scheduler, todo);
         }
