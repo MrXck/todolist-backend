@@ -317,7 +317,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             return false;
         }
 
-        return startTime.isEqual(now) && predictTime.isAfter(LocalTime.now());
+        return (startTime.isEqual(now) && predictTime.isAfter(LocalTime.now())) || startTime.isAfter(now);
     }
 
     public void addQuartz(Scheduler scheduler, Todo todo) {
