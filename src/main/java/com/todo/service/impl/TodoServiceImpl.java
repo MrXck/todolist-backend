@@ -307,7 +307,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         this.update(updateWrapper);
     }
 
-    public boolean isCanAddQuartz(LocalDate startTime, LocalTime predictTime) {
+    public boolean canAddQuartz(LocalDate startTime, LocalTime predictTime) {
         LocalDate now = LocalDate.now();
 
         if (startTime.isBefore(now)) {
@@ -324,10 +324,9 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             return;
         }
 
-        if (!isCanAddQuartz(todo.getStartTime(), todo.getPredictTime())) {
-            return;
+        if (canAddQuartz(todo.getStartTime(), todo.getPredictTime())) {
+            QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
         }
-        QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
     }
 
 }
