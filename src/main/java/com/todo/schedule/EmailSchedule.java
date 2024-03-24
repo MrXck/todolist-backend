@@ -36,7 +36,6 @@ public class EmailSchedule {
         queryWrapper.le(Todo::getStartTime, now);
         queryWrapper.ge(Todo::getEndTime, now);
         queryWrapper.eq(Todo::getIsDone, false);
-        queryWrapper.eq(Todo::getEnableEmail, Constant.ENABLE_EMAIL);
 
         List<Todo> list = todoService.list(queryWrapper);
 
