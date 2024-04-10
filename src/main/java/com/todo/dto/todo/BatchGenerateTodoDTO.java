@@ -47,4 +47,11 @@ public class BatchGenerateTodoDTO {
 
     @NotNull(message = "是否开启邮件提醒不能为空")
     private Boolean enableEmail;
+
+    @NotNull(message = "通知类型不能为空")
+    @Min(value = 1, message = "不能小于1")
+    @Max(value = 4, message = "不能大于4")
+    private Integer noticeType;
+
+    private Integer cronNum;
 }

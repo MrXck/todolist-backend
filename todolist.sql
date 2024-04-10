@@ -11,7 +11,7 @@
  Target Server Version : 50644 (5.6.44)
  File Encoding         : 65001
 
- Date: 19/03/2024 12:06:55
+ Date: 29/03/2024 22:55:43
 */
 
 SET NAMES utf8mb4;
@@ -65,7 +65,7 @@ DROP TABLE IF EXISTS `todo`;
 CREATE TABLE `todo`  (
   `id` bigint(20) NOT NULL,
   `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `detail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `is_done` tinyint(4) NOT NULL,
   `priority` smallint(6) NOT NULL,
   `start_time` date NOT NULL,

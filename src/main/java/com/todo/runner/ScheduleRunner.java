@@ -1,6 +1,7 @@
 package com.todo.runner;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.todo.exception.APIException;
 import com.todo.pojo.Todo;
 import com.todo.pojo.User;
 import com.todo.service.TodoService;
@@ -17,6 +18,7 @@ import java.util.*;
 
 @Component
 public class ScheduleRunner implements CommandLineRunner {
+
     @Override
     public void run(String... args) throws Exception {
         TodoService todoService = SpringUtils.getBean(TodoService.class);
@@ -59,7 +61,53 @@ public class ScheduleRunner implements CommandLineRunner {
             List<Todo> todos = map.get(user.getId());
 
             for (Todo todo : todos) {
-                QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
+                LocalTime predictTime = todo.getPredictTime();
+                LocalDate startTime = todo.getStartTime();
+                LocalDate endTime = todo.getEndTime();
+                Integer noticeType = todo.getNoticeType();
+                Long id = todo.getId();
+                String title = todo.getTitle();
+
+                if (Constant.QUARTZ_EXECUTE_ONCE.equals(noticeType)) {
+                    QuartzUtils.createScheduleJobWithDateTime(
+                            scheduler,
+                            new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
+                            Constant.QUARTZ_TASK_PATH
+                    );
+                } else {
+                    String second = String.valueOf(predictTime.getSecond());
+                    String minute = String.valueOf(predictTime.getMinute());
+                    String hour = String.valueOf(predictTime.getHour());
+                    Integer cronNum = todo.getCronNum();
+                    if (Constant.QUARTZ_EXECUTE_EVERY_DAY.equals(noticeType)) {
+                        QuartzUtils.createScheduleJobWithCron(
+                                scheduler,
+                                new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
+                                CronUtils.generateDailyCron(second, minute, hour),
+                                Constant.QUARTZ_TASK_PATH
+                        );
+                    } else if (Constant.QUARTZ_EXECUTE_EVERY_WEEK.equals(noticeType)) {
+                        if (cronNum == null) {
+                            throw new APIException("cronNum不能为空");
+                        }
+                        QuartzUtils.createScheduleJobWithCron(
+                                scheduler,
+                                new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
+                                CronUtils.generateWeeklyCron(second, minute, hour, String.valueOf(cronNum)),
+                                Constant.QUARTZ_TASK_PATH
+                        );
+                    } else if (Constant.QUARTZ_EXECUTE_EVERY_MONTH.equals(noticeType)) {
+                        if (cronNum == null) {
+                            throw new APIException("cronNum不能为空");
+                        }
+                        QuartzUtils.createScheduleJobWithCron(
+                                scheduler,
+                                new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
+                                CronUtils.generateMonthlyCron(second, minute, hour, String.valueOf(cronNum)),
+                                Constant.QUARTZ_TASK_PATH
+                        );
+                    }
+                }
             }
         }
     }

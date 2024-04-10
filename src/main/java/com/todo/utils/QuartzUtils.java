@@ -26,7 +26,6 @@ public class QuartzUtils {
      * @param scheduler 调度器
      * @param schedule  定时任务信息类
      * @param taskClassPath 定时任务类全限定名
-     * @throws Exception
      */
     public static void createScheduleJobWithCron(Scheduler scheduler, Schedule schedule, String cron, String taskClassPath) {
         try {
@@ -44,13 +43,15 @@ public class QuartzUtils {
                 scheduleBuilder = CronScheduleBuilder
                         .cronSchedule(cron);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new APIException("cron表达式配置错误");
             }
             //.withMisfireHandlingInstructionDoNothing();
             // 构建触发器trigger
             CronTrigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(schedule.getId().toString())
-                    .startAt(new Date(System.currentTimeMillis() + 1000))
+                    .startAt(schedule.getStartDate())
+                    .endAt(schedule.getEndDate())
                     .withSchedule(scheduleBuilder).build();
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (ClassNotFoundException e) {
@@ -66,7 +67,6 @@ public class QuartzUtils {
      * @param scheduler 调度器
      * @param schedule  定时任务信息类
      * @param taskClassPath 定时任务类全限定名
-     * @throws Exception
      */
     public static void createScheduleJobWithDateTime(Scheduler scheduler, Schedule schedule, String taskClassPath) {
         try {
@@ -82,7 +82,8 @@ public class QuartzUtils {
             // 构建触发器trigger
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(schedule.getId().toString())
-                    .startAt(schedule.getDate())
+                    .startAt(schedule.getStartDate())
+                    .endAt(schedule.getEndDate())
                     .build();
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (ClassNotFoundException e) {

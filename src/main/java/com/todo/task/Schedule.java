@@ -11,5 +11,7 @@ public class Schedule {
     private Long id;
     private String name;
 
-    private Date date;
+    private Date startDate;
+
+    private Date endDate;
 }

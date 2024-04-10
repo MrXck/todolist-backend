@@ -12,10 +12,7 @@ import com.todo.pojo.User;
 import com.todo.service.TodoService;
 import com.todo.service.UserService;
 import com.todo.task.Schedule;
-import com.todo.utils.Constant;
-import com.todo.utils.DateUtils;
-import com.todo.utils.QuartzUtils;
-import com.todo.utils.UserThreadLocal;
+import com.todo.utils.*;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,8 +106,11 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setId(updateTodoDTO.getId());
         todo.setTitle(updateTodoDTO.getTitle());
         todo.setStartTime(updateTodoDTO.getStartTime());
+        todo.setEndTime(updateTodoDTO.getEndTime());
         todo.setPredictTime(updateTodoDTO.getPredictTime());
         todo.setEnableEmail(updateTodoDTO.getEnableEmail());
+        todo.setNoticeType(updateTodoDTO.getNoticeType());
+        todo.setCronNum(updateTodoDTO.getCronNum());
 
         // 添加到定时任务中
         addQuartz(scheduler, todo);
@@ -236,6 +236,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         List<Integer> generateDateList = batchGenerateTodoDTO.getGenerateDateList();
         LocalTime predictTime = batchGenerateTodoDTO.getPredictTime();
         Boolean enableEmail = batchGenerateTodoDTO.getEnableEmail();
+        Integer noticeType = batchGenerateTodoDTO.getNoticeType();
+        Integer cronNum = batchGenerateTodoDTO.getCronNum();
 
         // 根据生成参数生成日期列表
         List<Date> dates = new ArrayList<>();
@@ -270,6 +272,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             todo.setPriority(priority);
             todo.setPredictTime(predictTime);
             todo.setEnableEmail(enableEmail);
+            todo.setNoticeType(noticeType);
+            todo.setCronNum(cronNum);
 
             todo.setStartTime(LocalDate.parse(sdf.format(date)));
             todo.setEndTime(LocalDate.parse(sdf.format(calendar.getTime())));
@@ -345,9 +349,60 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     public void addQuartz(Scheduler scheduler, Todo todo) {
-        if (canAddQuartz(todo.getStartTime(), todo.getPredictTime(), todo)) {
-            QuartzUtils.createScheduleJobWithDateTime(scheduler, new Schedule(todo.getId(), todo.getTitle(), DateUtils.generateDateWithLocalDateAndLocalTime(todo.getStartTime(), todo.getPredictTime())), Constant.QUARTZ_TASK_PATH);
+        LocalTime predictTime = todo.getPredictTime();
+        LocalDate startTime = todo.getStartTime();
+
+        if (!canAddQuartz(startTime, predictTime, todo)) {
+            return;
         }
+
+        LocalDate endTime = todo.getEndTime();
+        Integer noticeType = todo.getNoticeType();
+        Long id = todo.getId();
+        String title = todo.getTitle();
+
+        if (Constant.QUARTZ_EXECUTE_ONCE.equals(noticeType)) {
+            QuartzUtils.createScheduleJobWithDateTime(
+                    scheduler,
+                    new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
+                    Constant.QUARTZ_TASK_PATH
+            );
+        } else {
+            String second = String.valueOf(predictTime.getSecond());
+            String minute = String.valueOf(predictTime.getMinute());
+            String hour = String.valueOf(predictTime.getHour());
+            Integer cronNum = todo.getCronNum();
+            if (Constant.QUARTZ_EXECUTE_EVERY_DAY.equals(noticeType)) {
+                QuartzUtils.createScheduleJobWithCron(
+                        scheduler,
+                        new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
+                        CronUtils.generateDailyCron(second, minute, hour),
+                        Constant.QUARTZ_TASK_PATH
+                );
+            } else if (Constant.QUARTZ_EXECUTE_EVERY_WEEK.equals(noticeType)) {
+                if (cronNum == null) {
+                    throw new APIException("cronNum不能为空");
+                }
+                QuartzUtils.createScheduleJobWithCron(
+                        scheduler,
+                        new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
+                        CronUtils.generateWeeklyCron(second, minute, hour, CronUtils.getWeekDay(cronNum)),
+                        Constant.QUARTZ_TASK_PATH
+                );
+            } else if (Constant.QUARTZ_EXECUTE_EVERY_MONTH.equals(noticeType)) {
+                if (cronNum == null) {
+                    throw new APIException("cronNum不能为空");
+                }
+                QuartzUtils.createScheduleJobWithCron(
+                        scheduler,
+                        new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
+                        CronUtils.generateMonthlyCron(second, minute, hour, String.valueOf(cronNum)),
+                        Constant.QUARTZ_TASK_PATH
+                );
+            }
+        }
+
+
     }
 
 }

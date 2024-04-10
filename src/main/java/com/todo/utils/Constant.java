@@ -31,7 +31,7 @@ public class Constant {
 
     public static final String TODO_START_TODO_ERROR = "待办事项开始后就不能修改开始时间了";
 
-    public static final String TODO_END_TODO_ERROR = "待办事项结束后就不能修改开始时间了";
+    public static final String TODO_END_TODO_ERROR = "待办事项结束后就不能修改结束时间了";
 
     public static final String CHECK_EMAIL_ERROR = "请输入正确的邮箱";
 
@@ -43,5 +43,10 @@ public class Constant {
     public static final Integer GENERATE_TYPE_MONTH = 3;
 
     public static final String QUARTZ_TASK_PATH = "com.todo.task.AutomaticTask";
+
+    public static final Integer QUARTZ_EXECUTE_ONCE = 1;
+    public static final Integer QUARTZ_EXECUTE_EVERY_DAY = 2;
+    public static final Integer QUARTZ_EXECUTE_EVERY_WEEK = 3;
+    public static final Integer QUARTZ_EXECUTE_EVERY_MONTH = 4;
 
 }

@@ -20,6 +20,8 @@ public class Todo {
     private LocalDate endTime;
     private LocalTime predictTime;
     private Boolean enableEmail;
+    private Integer noticeType;
+    private Integer cronNum;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private LocalDateTime startDoTime;
