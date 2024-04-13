@@ -50,7 +50,7 @@ public class QuartzUtils {
             // 构建触发器trigger
             CronTrigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(schedule.getId().toString())
-                    .startAt(schedule.getStartDate())
+                    .startNow()
                     .endAt(schedule.getEndDate())
                     .withSchedule(scheduleBuilder).build();
             scheduler.scheduleJob(jobDetail, trigger);

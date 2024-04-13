@@ -37,6 +37,8 @@ public class Constant {
 
     public static final String TASK_BOX_ERROR = "已有相同名称的清单";
 
+    public static final String NOTICE_TYPE_ERROR = "通知类型不能为空";
+
 
     public static final Integer GENERATE_TYPE_DAY = 1;
     public static final Integer GENERATE_TYPE_WEEK = 2;

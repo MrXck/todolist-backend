@@ -361,6 +361,10 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         Long id = todo.getId();
         String title = todo.getTitle();
 
+        if (noticeType == null) {
+            throw new APIException(Constant.NOTICE_TYPE_ERROR);
+        }
+
         if (Constant.QUARTZ_EXECUTE_ONCE.equals(noticeType)) {
             QuartzUtils.createScheduleJobWithDateTime(
                     scheduler,
