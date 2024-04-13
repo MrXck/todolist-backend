@@ -4,15 +4,15 @@ import java.text.MessageFormat;
 
 public class CronUtils {
 
-    public static String generateDailyCron(String hour, String minute, String second) {
+    public static String generateDailyCron(String second, String minute, String hour) {
         return generateCron(second, minute, hour, "*", "*", "?");
     }
 
-    public static String generateWeeklyCron(String hour, String minute, String second, String dayOfWeek) {
+    public static String generateWeeklyCron(String second, String minute, String hour, String dayOfWeek) {
         return generateCron(second, minute, hour, "?", "*", dayOfWeek);
     }
 
-    public static String generateMonthlyCron(String hour, String minute, String second, String dayOfMonth) {
+    public static String generateMonthlyCron(String second, String minute, String hour, String dayOfMonth) {
         return generateCron(second, minute, hour, dayOfMonth, "*", "?");
     }
 
