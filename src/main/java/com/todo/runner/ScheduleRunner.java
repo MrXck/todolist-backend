@@ -93,7 +93,7 @@ public class ScheduleRunner implements CommandLineRunner {
                         QuartzUtils.createScheduleJobWithCron(
                                 scheduler,
                                 new Schedule(id, title, DateUtils.generateDateWithLocalDateAndLocalTime(startTime, predictTime), DateUtils.generateDateWithLocalDateAndLocalTime(endTime, predictTime)),
-                                CronUtils.generateWeeklyCron(second, minute, hour, String.valueOf(cronNum)),
+                                CronUtils.generateWeeklyCron(second, minute, hour, CronUtils.getWeekDay(cronNum)),
                                 Constant.QUARTZ_TASK_PATH
                         );
                     } else if (Constant.QUARTZ_EXECUTE_EVERY_MONTH.equals(noticeType)) {
