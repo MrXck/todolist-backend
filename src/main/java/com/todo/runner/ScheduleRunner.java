@@ -26,7 +26,7 @@ public class ScheduleRunner implements CommandLineRunner {
         Scheduler scheduler = SpringUtils.getBean(Scheduler.class);
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getIsDone, false);
-        queryWrapper.ge(Todo::getStartTime, LocalDate.now());
+        queryWrapper.ge(Todo::getEndTime, LocalDate.now());
         queryWrapper.gt(Todo::getPredictTime, LocalTime.now());
         List<Todo> todoList = todoService.list(queryWrapper);
 

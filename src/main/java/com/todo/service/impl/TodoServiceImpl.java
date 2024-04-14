@@ -320,7 +320,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         this.update(updateWrapper);
     }
 
-    public boolean canAddQuartz(LocalDate startTime, LocalTime predictTime, Todo todo) {
+    public boolean canAddQuartz(LocalDate endTime, LocalTime predictTime, Todo todo) {
         // 判断该待办事项是否开启邮件提醒
         Boolean enableEmail = todo.getEnableEmail();
         if (Constant.DISABLE_EMAIL.equals(enableEmail)) {
@@ -341,22 +341,22 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
         LocalDate now = LocalDate.now();
 
-        if (startTime.isBefore(now)) {
+        if (endTime.isBefore(now)) {
             return false;
         }
 
-        return (startTime.isEqual(now) && predictTime.isAfter(LocalTime.now())) || startTime.isAfter(now);
+        return (endTime.isEqual(now) && predictTime.isAfter(LocalTime.now())) || endTime.isAfter(now);
     }
 
     public void addQuartz(Scheduler scheduler, Todo todo) {
         LocalTime predictTime = todo.getPredictTime();
-        LocalDate startTime = todo.getStartTime();
+        LocalDate endTime = todo.getEndTime();
 
-        if (!canAddQuartz(startTime, predictTime, todo)) {
+        if (!canAddQuartz(endTime, predictTime, todo)) {
             return;
         }
 
-        LocalDate endTime = todo.getEndTime();
+        LocalDate startTime = todo.getStartTime();
         Integer noticeType = todo.getNoticeType();
         Long id = todo.getId();
         String title = todo.getTitle();
