@@ -14,8 +14,6 @@ public class UpdateUserDTO {
     @NotEmpty(message = "密码不能为空")
     private String password;
 
-    private String email;
-
     @NotNull(message = "是否开启邮件提醒不能为空")
     private Boolean enableEmail;
 

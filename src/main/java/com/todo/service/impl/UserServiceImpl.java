@@ -18,12 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private MailUtils mailUtils;
+
+    @Autowired
+    private CacheUtils<String, String> cacheUtils;
 
     @Override
     public UserDTO login(UserDTO userDTO) {
@@ -58,11 +65,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void updateUser(UpdateUserDTO updateUserDTO) {
         String username = updateUserDTO.getUsername();
         String password = updateUserDTO.getPassword();
-        String email = updateUserDTO.getEmail();
-
-        if ((email != null && !email.isEmpty()) && !EmailValidatorUtils.isValid(email)) {
-            throw new APIException(Constant.CHECK_EMAIL_ERROR);
-        }
 
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, username);
@@ -78,7 +80,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         updateWrapper.set(User::getPassword, MD5Utils.md5(password));
         updateWrapper.set(User::getEnableEmail, updateUserDTO.getEnableEmail());
         updateWrapper.set(User::getUpdateTime, LocalDateTime.now());
-        updateWrapper.set(email != null, User::getEmail, email);
 
         this.update(updateWrapper);
     }
@@ -104,5 +105,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setUpdateTime(LocalDateTime.now());
         user.setCreateTime(LocalDateTime.now());
         this.save(user);
+    }
+
+    @Override
+    public void sendEmail(String email) {
+        if (!EmailValidatorUtils.isValid(email)) {
+            throw new APIException(Constant.CHECK_EMAIL_ERROR);
+        }
+
+        if (cacheUtils.get(UserThreadLocal.get().toString()) != null || cacheUtils.get(email) != null) {
+            throw new APIException(Constant.SEND_EMAIL_CODE_ERROR);
+        }
+
+        String string = ValidateCodeUtils.generateValidateCode4String(6);
+        cacheUtils.put(UserThreadLocal.get().toString(), string, 300, TimeUnit.SECONDS);
+        cacheUtils.put(email, string, 300, TimeUnit.SECONDS);
+        mailUtils.sendMail(email, "邮箱绑定验证码", string);
+    }
+
+    @Override
+    public void bindEmail(String email, String code) {
+        String string = cacheUtils.get(email);
+
+        if (string == null || !string.equals(code)) {
+            throw new APIException(Constant.CHECK_EMAIL_CODE_ERROR);
+        }
+
+        cacheUtils.remove(email);
+
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getId, UserThreadLocal.get());
+        updateWrapper.set(User::getEmail, email);
+        this.update(updateWrapper);
     }
 }

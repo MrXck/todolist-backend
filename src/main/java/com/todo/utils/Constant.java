@@ -34,6 +34,8 @@ public class Constant {
     public static final String TODO_END_TODO_ERROR = "待办事项结束后就不能修改结束时间了";
 
     public static final String CHECK_EMAIL_ERROR = "请输入正确的邮箱";
+    public static final String CHECK_EMAIL_CODE_ERROR = "验证错误";
+    public static final String SEND_EMAIL_CODE_ERROR = "请等待当前验证码失效后再发送";
 
     public static final String TASK_BOX_ERROR = "已有相同名称的清单";
 

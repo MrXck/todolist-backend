@@ -14,4 +14,8 @@ public interface UserService extends IService<User> {
     void updateUser(UpdateUserDTO updateUserDTO);
 
     void register(RegisterUserDTO registerUser);
+
+    void sendEmail(String email);
+
+    void bindEmail(String email, String code);
 }

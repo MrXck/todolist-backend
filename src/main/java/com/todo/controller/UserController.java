@@ -6,10 +6,7 @@ import com.todo.dto.user.UserDTO;
 import com.todo.service.UserService;
 import com.todo.utils.NoAuthorization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -35,5 +32,15 @@ public class UserController {
     @NoAuthorization
     public void register(@RequestBody @Valid RegisterUserDTO registerUser) {
         userService.register(registerUser);
+    }
+
+    @GetMapping("/sendEmail/{email}")
+    public void sendEmail(@PathVariable("email") String email) {
+        userService.sendEmail(email);
+    }
+
+    @GetMapping("/bindEmail/{email}/{code}")
+    public void bindEmail(@PathVariable("email") String email, @PathVariable("code") String code) {
+        userService.bindEmail(email, code);
     }
 }
