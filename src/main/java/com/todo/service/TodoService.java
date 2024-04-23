@@ -81,9 +81,17 @@ public interface TodoService extends IService<Todo> {
     void endTodo(Long todoId);
 
     /**
+     * 判断是否可以满足加入到定时任务的条件
+     * @param todo 待办事项
+     * @param userId 用户id
+     * @return 是否可以加入
+     */
+    boolean canAddQuartz(Todo todo, Long userId);
+
+    /**
      * 将待办事项添加到定时任务中
      * @param scheduler 定时器
      * @param todo 待办事项
      */
-    void addQuartz(Scheduler scheduler, Todo todo);
+    void addQuartz(Scheduler scheduler, Todo todo, Long user);
 }

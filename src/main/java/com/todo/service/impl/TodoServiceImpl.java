@@ -113,7 +113,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setCronNum(updateTodoDTO.getCronNum());
 
         // 添加到定时任务中
-        addQuartz(scheduler, todo);
+        addQuartz(scheduler, todo, UserThreadLocal.get());
     }
 
     @Override
@@ -136,7 +136,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         this.save(todo);
 
         // 添加到定时任务中
-        addQuartz(scheduler, todo);
+        addQuartz(scheduler, todo, UserThreadLocal.get());
         return todo.getId();
     }
 
@@ -286,7 +286,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
         this.saveBatch(todos);
         for (Todo todo : todos) {
-            addQuartz(scheduler, todo);
+            addQuartz(scheduler, todo, UserThreadLocal.get());
         }
     }
 
@@ -320,7 +320,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         this.update(updateWrapper);
     }
 
-    public boolean canAddQuartz(LocalDate endTime, LocalTime predictTime, Todo todo) {
+    @Override
+    public boolean canAddQuartz(Todo todo, Long userId) {
         // 判断该待办事项是否开启邮件提醒
         Boolean enableEmail = todo.getEnableEmail();
         if (Constant.DISABLE_EMAIL.equals(enableEmail)) {
@@ -328,7 +329,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         }
 
         // 获取用户然后判断该用户是否开启邮件提醒
-        User user = userService.getById(UserThreadLocal.get());
+        User user = userService.getById(userId);
         if (Constant.DISABLE_EMAIL.equals(user.getEnableEmail())) {
             return false;
         }
@@ -341,21 +342,25 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
         LocalDate now = LocalDate.now();
 
+        LocalDate endTime = todo.getEndTime();
+
         if (endTime.isBefore(now)) {
             return false;
         }
 
+        LocalTime predictTime = todo.getPredictTime();
+
         return (endTime.isEqual(now) && predictTime.isAfter(LocalTime.now())) || endTime.isAfter(now);
     }
 
-    public void addQuartz(Scheduler scheduler, Todo todo) {
-        LocalTime predictTime = todo.getPredictTime();
-        LocalDate endTime = todo.getEndTime();
-
-        if (!canAddQuartz(endTime, predictTime, todo)) {
+    @Override
+    public void addQuartz(Scheduler scheduler, Todo todo, Long userId) {
+        if (!canAddQuartz(todo, userId)) {
             return;
         }
 
+        LocalTime predictTime = todo.getPredictTime();
+        LocalDate endTime = todo.getEndTime();
         LocalDate startTime = todo.getStartTime();
         Integer noticeType = todo.getNoticeType();
         Long id = todo.getId();
