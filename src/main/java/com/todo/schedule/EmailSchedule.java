@@ -58,6 +58,10 @@ public class EmailSchedule {
             }
         }
 
+        if (userIds.isEmpty()) {
+            return;
+        }
+
         LambdaQueryWrapper<User> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.in(User::getId, userIds);
         List<User> users = userService.list(queryWrapper1);
