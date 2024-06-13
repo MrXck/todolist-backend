@@ -11,7 +11,7 @@
  Target Server Version : 50644 (5.6.44)
  File Encoding         : 65001
 
- Date: 13/06/2024 17:24:54
+ Date: 13/06/2024 17:37:10
 */
 
 SET NAMES utf8mb4;
@@ -53,7 +53,7 @@ CREATE TABLE `operation_log`  (
   `id` bigint(20) NOT NULL,
   `method` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `param` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_id` bigint(20) NULL DEFAULT NULL,
   `consuming` int(11) NOT NULL,
