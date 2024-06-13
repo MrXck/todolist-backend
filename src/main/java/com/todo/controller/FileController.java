@@ -1,10 +1,7 @@
 package com.todo.controller;
 
 import com.todo.exception.APIException;
-import com.todo.utils.Constant;
-import com.todo.utils.NoAuthorization;
-import com.todo.utils.NotControllerResponseAdvice;
-import com.todo.utils.UserThreadLocal;
+import com.todo.utils.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +17,7 @@ import java.util.UUID;
 @RequestMapping("/file")
 public class FileController {
 
+    @Log
     @PostMapping(value = "/upload")
     @NotControllerResponseAdvice
     public Map<String, Object> upload(@RequestParam("editormd-image-file") MultipartFile multipartFile) throws Exception {

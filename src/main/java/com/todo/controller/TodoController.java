@@ -2,6 +2,7 @@ package com.todo.controller;
 
 import com.todo.dto.todo.*;
 import com.todo.service.TodoService;
+import com.todo.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,16 +20,19 @@ public class TodoController {
         return todoService.getByMonth(getTodoDTO);
     }
 
+    @Log
     @PostMapping("/updateById")
     public void updateById(@RequestBody @Valid UpdateTodoDTO updateTodoDTO) {
         todoService.updateTodoById(updateTodoDTO);
     }
 
+    @Log
     @PostMapping("/addTodo")
     public Long addTodo(@RequestBody @Valid AddTodoDTO addTodoDTO) {
         return todoService.add(addTodoDTO);
     }
 
+    @Log
     @PostMapping("/removeTodoById/{todoId}")
     public void removeTodoById(@PathVariable Long todoId) {
         todoService.deleteById(todoId);
@@ -59,16 +63,19 @@ public class TodoController {
         return todoService.getDelayTodo();
     }
 
+    @Log
     @PostMapping("/batchGenerateTodo")
     public void batchGenerateTodo(@RequestBody @Valid BatchGenerateTodoDTO batchGenerateTodoDTO) {
         todoService.batchGenerate(batchGenerateTodoDTO);
     }
 
+    @Log
     @PostMapping("/startTodo/{todoId}")
     public void startTodo(@PathVariable Long todoId) {
         todoService.startTodo(todoId);
     }
 
+    @Log
     @PostMapping("/endTodo/{todoId}")
     public void endTodo(@PathVariable Long todoId) {
         todoService.endTodo(todoId);

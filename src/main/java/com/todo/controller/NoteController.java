@@ -5,6 +5,7 @@ import com.todo.dto.note.GetNoteByPageDTO;
 import com.todo.dto.note.NoteDTO;
 import com.todo.dto.note.UpdateNoteDTO;
 import com.todo.service.NoteService;
+import com.todo.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
+    @Log
     @PostMapping("/add")
     public void add(@RequestBody @Valid AddNoteDTO addNoteDTO) {
         noteService.add(addNoteDTO);
@@ -27,11 +29,13 @@ public class NoteController {
         return noteService.getByPage(getNoteByPageDTO);
     }
 
+    @Log
     @PostMapping("/remove/{noteId}")
     public void removeById(@PathVariable("noteId") Long noteId) {
         noteService.deleteById(noteId);
     }
 
+    @Log
     @PostMapping("/update")
     public void update(@RequestBody @Valid UpdateNoteDTO updateNoteDTO) {
         noteService.updateNote(updateNoteDTO);
