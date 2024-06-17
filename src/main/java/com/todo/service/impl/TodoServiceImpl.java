@@ -54,6 +54,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         queryWrapper.eq(Todo::getUserId, userId);
         queryWrapper.ge(Todo::getEndTime, startTime);
         queryWrapper.le(Todo::getStartTime, endTime);
+        queryWrapper.orderByDesc(Todo::getPriority);
 
         List<Todo> list = this.list(queryWrapper);
 
@@ -291,6 +292,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void startTodo(Long todoId) {
         Todo todo = this.getById(todoId);
 
@@ -306,6 +308,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void endTodo(Long todoId) {
         Todo todo = this.getById(todoId);
 
@@ -412,6 +415,21 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         }
 
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteBatch(DeleteBatchDTO dto) {
+        List<Long> todoIds = dto.getTodoIds();
+
+        if (todoIds.isEmpty()) {
+            return;
+        }
+
+        LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
+        queryWrapper.in(Todo::getId, todoIds);
+        this.remove(queryWrapper);
     }
 
 }

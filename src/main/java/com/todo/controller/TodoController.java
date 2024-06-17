@@ -81,4 +81,10 @@ public class TodoController {
         todoService.endTodo(todoId);
     }
 
+    @Log
+    @PostMapping("/deleteBatch")
+    public void deleteBatch(@RequestBody @Valid DeleteBatchDTO dto) {
+        todoService.deleteBatch(dto);
+    }
+
 }

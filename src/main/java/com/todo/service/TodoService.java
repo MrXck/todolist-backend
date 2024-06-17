@@ -94,4 +94,10 @@ public interface TodoService extends IService<Todo> {
      * @param todo 待办事项
      */
     void addQuartz(Scheduler scheduler, Todo todo, Long user);
+
+    /**
+     * 批量删除待办事项
+     * @param dto 待办事项id
+     */
+    void deleteBatch(DeleteBatchDTO dto);
 }
