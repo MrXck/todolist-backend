@@ -11,7 +11,7 @@
  Target Server Version : 50644 (5.6.44)
  File Encoding         : 65001
 
- Date: 13/06/2024 17:37:10
+ Date: 19/06/2024 14:58:00
 */
 
 SET NAMES utf8mb4;
@@ -72,6 +72,23 @@ CREATE TABLE `task_box`  (
   `create_time` datetime NOT NULL,
   `update_time` datetime NOT NULL,
   `user_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for time_thing
+-- ----------------------------
+DROP TABLE IF EXISTS `time_thing`;
+CREATE TABLE `time_thing`  (
+  `id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `create_time` datetime NOT NULL,
+  `update_time` datetime NOT NULL,
+  `thing_time` date NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;
 
