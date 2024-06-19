@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LocalTimeValidator.class)
-public @interface ValidLocalTime {
+@Constraint(validatedBy = LocalDateTimeValidator.class)
+public @interface ValidLocalDateTime {
 
     String message() default "Invalid date format";
 
