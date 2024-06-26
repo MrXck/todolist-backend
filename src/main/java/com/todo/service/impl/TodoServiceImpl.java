@@ -54,7 +54,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         queryWrapper.eq(Todo::getUserId, userId);
         queryWrapper.ge(Todo::getEndTime, startTime);
         queryWrapper.le(Todo::getStartTime, endTime);
-        queryWrapper.orderByDesc(Todo::getPriority);
+        queryWrapper.orderByAsc(Todo::getPriority);
 
         List<Todo> list = this.list(queryWrapper);
 
