@@ -24,8 +24,7 @@ public class MailUtils {
         //接受邮箱
         message.setTo(to);
         //发送者邮箱
-        message.setFrom("待办事项" + fromEmail + ">");
-//        message.setFrom(fromEmail);
+        message.setFrom("待办事项<" + fromEmail + ">");
         //发送
         javaMailSender.send(message);
     }
