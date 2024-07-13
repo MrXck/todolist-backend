@@ -11,6 +11,7 @@ public class Note {
     private String title;
     private String detail;
     private Long userId;
+    private String chart;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

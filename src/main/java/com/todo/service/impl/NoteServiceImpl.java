@@ -30,6 +30,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
         note.setTitle(addNoteDTO.getTitle());
         note.setDetail(addNoteDTO.getDetail());
         note.setUserId(UserThreadLocal.get());
+        note.setChart(addNoteDTO.getChart());
         note.setCreateTime(LocalDateTime.now());
         note.setUpdateTime(LocalDateTime.now());
         this.save(note);
@@ -69,6 +70,7 @@ public class NoteServiceImpl extends ServiceImpl<NoteMapper, Note> implements No
         updateWrapper.eq(Note::getId, updateNoteDTO.getId());
         updateWrapper.set(Note::getTitle, updateNoteDTO.getTitle());
         updateWrapper.set(Note::getDetail, updateNoteDTO.getDetail());
+        updateWrapper.set(Note::getChart, updateNoteDTO.getChart());
         updateWrapper.set(Note::getUpdateTime, LocalDateTime.now());
 
         this.update(updateWrapper);

@@ -13,4 +13,6 @@ public class AddNoteDTO {
     @NotEmpty(message = "内容不能为空")
     private String detail;
 
+    private String chart;
+
 }
