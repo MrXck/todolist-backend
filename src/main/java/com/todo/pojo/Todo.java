@@ -22,6 +22,8 @@ public class Todo {
     private Boolean enableEmail;
     private Integer noticeType;
     private Integer cronNum;
+    private LocalTime planStartTime;
+    private LocalTime planEndTime;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private LocalDateTime startDoTime;

@@ -91,6 +91,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(Todo::getPredictTime, updateTodoDTO.getPredictTime());
         updateWrapper.set(Todo::getEnableEmail, updateTodoDTO.getEnableEmail());
         updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
+        updateWrapper.set(Todo::getPlanStartTime, updateTodoDTO.getPlanStartTime());
+        updateWrapper.set(Todo::getPlanEndTime, updateTodoDTO.getPlanEndTime());
         boolean b = this.update(updateWrapper);
 
         if (!b) {
@@ -108,7 +110,11 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setTitle(updateTodoDTO.getTitle());
         todo.setStartTime(updateTodoDTO.getStartTime());
         todo.setEndTime(updateTodoDTO.getEndTime());
-        todo.setPredictTime(updateTodoDTO.getPredictTime());
+        if (updateTodoDTO.getPlanStartTime() != null) {
+            todo.setPredictTime(updateTodoDTO.getPlanStartTime());
+        } else {
+            todo.setPredictTime(updateTodoDTO.getPredictTime());
+        }
         todo.setEnableEmail(updateTodoDTO.getEnableEmail());
         todo.setNoticeType(updateTodoDTO.getNoticeType());
         todo.setCronNum(updateTodoDTO.getCronNum());
@@ -239,6 +245,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         Boolean enableEmail = batchGenerateTodoDTO.getEnableEmail();
         Integer noticeType = batchGenerateTodoDTO.getNoticeType();
         Integer cronNum = batchGenerateTodoDTO.getCronNum();
+        LocalTime planStartTime = batchGenerateTodoDTO.getPlanStartTime();
+        LocalTime planEndTime = batchGenerateTodoDTO.getPlanEndTime();
 
         // 根据生成参数生成日期列表
         List<Date> dates = new ArrayList<>();
@@ -275,6 +283,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             todo.setEnableEmail(enableEmail);
             todo.setNoticeType(noticeType);
             todo.setCronNum(cronNum);
+            todo.setPlanStartTime(planStartTime);
+            todo.setPlanEndTime(planEndTime);
 
             todo.setStartTime(LocalDate.parse(sdf.format(date)));
             todo.setEndTime(LocalDate.parse(sdf.format(calendar.getTime())));
@@ -287,6 +297,10 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
         this.saveBatch(todos);
         for (Todo todo : todos) {
+            LocalTime todoPlanStartTime = todo.getPlanStartTime();
+            if (todoPlanStartTime != null) {
+                todo.setPredictTime(todoPlanStartTime);
+            }
             addQuartz(scheduler, todo, UserThreadLocal.get());
         }
     }

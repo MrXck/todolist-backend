@@ -47,4 +47,8 @@ public class UpdateTodoDTO {
     private Integer noticeType;
 
     private Integer cronNum;
+
+    private LocalTime planStartTime;
+
+    private LocalTime planEndTime;
 }
