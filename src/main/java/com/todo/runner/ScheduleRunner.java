@@ -59,6 +59,9 @@ public class ScheduleRunner implements CommandLineRunner {
             List<Todo> todos = map.get(user.getId());
 
             for (Todo todo : todos) {
+                if (todo.getPlanStartTime() != null) {
+                    todo.setPredictTime(todo.getPlanStartTime());
+                }
                 todoService.addQuartz(scheduler, todo, user.getId());
             }
         }

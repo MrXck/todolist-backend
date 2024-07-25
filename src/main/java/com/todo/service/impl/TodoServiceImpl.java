@@ -140,6 +140,9 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setUserId(UserThreadLocal.get());
         todo.setCreateTime(LocalDateTime.now());
         todo.setUpdateTime(LocalDateTime.now());
+        if (todo.getPlanStartTime() != null) {
+            todo.setPredictTime(todo.getPlanStartTime());
+        }
         this.save(todo);
 
         // 添加到定时任务中
