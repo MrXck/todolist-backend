@@ -77,6 +77,23 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             throw new APIException(Constant.DATE_ERROR);
         }
 
+        LocalTime planStartTime = updateTodoDTO.getPlanStartTime();
+        LocalTime planEndTime = updateTodoDTO.getPlanEndTime();
+
+        if (planStartTime != null && planEndTime != null) {
+            LocalDate planStartDoDate = LocalDate.of(startTime.getYear(), startTime.getMonth(), startTime.getDayOfMonth());
+            LocalTime planStartDoTime = LocalTime.of(planStartTime.getHour(), planStartTime.getMinute(), planStartTime.getSecond());
+            LocalDateTime planStartDoDateTime = planStartDoDate.atTime(planStartDoTime);
+
+            LocalDate planEndDoDate = LocalDate.of(startTime.getYear(), startTime.getMonth(), startTime.getDayOfMonth());
+            LocalTime planEndDoTime = LocalTime.of(planStartTime.getHour(), planStartTime.getMinute(), planStartTime.getSecond());
+            LocalDateTime planEndDoDateTime = planEndDoDate.atTime(planEndDoTime);
+
+            if (planStartDoDateTime.isAfter(planEndDoDateTime)) {
+                throw new APIException(Constant.DATE_ERROR);
+            }
+        }
+
         // 修改待办事项设置
         LambdaUpdateWrapper<Todo> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(Todo::getUserId, UserThreadLocal.get());
@@ -133,6 +150,23 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         int i = startTime.compareTo(endTime);
         if (i > 0) {
             throw new APIException(Constant.DATE_ERROR);
+        }
+
+        LocalTime planStartTime = addTodoDTO.getPlanStartTime();
+        LocalTime planEndTime = addTodoDTO.getPlanEndTime();
+
+        if (planStartTime != null && planEndTime != null) {
+            LocalDate planStartDoDate = LocalDate.of(startTime.getYear(), startTime.getMonth(), startTime.getDayOfMonth());
+            LocalTime planStartDoTime = LocalTime.of(planStartTime.getHour(), planStartTime.getMinute(), planStartTime.getSecond());
+            LocalDateTime planStartDoDateTime = planStartDoDate.atTime(planStartDoTime);
+
+            LocalDate planEndDoDate = LocalDate.of(startTime.getYear(), startTime.getMonth(), startTime.getDayOfMonth());
+            LocalTime planEndDoTime = LocalTime.of(planStartTime.getHour(), planStartTime.getMinute(), planStartTime.getSecond());
+            LocalDateTime planEndDoDateTime = planEndDoDate.atTime(planEndDoTime);
+
+            if (planStartDoDateTime.isAfter(planEndDoDateTime)) {
+                throw new APIException(Constant.DATE_ERROR);
+            }
         }
 
         Todo todo = new Todo();
