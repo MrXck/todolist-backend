@@ -5,6 +5,7 @@ import com.todo.pojo.Todo;
 import com.todo.pojo.User;
 import com.todo.service.TodoService;
 import com.todo.service.UserService;
+import com.todo.utils.Constant;
 import com.todo.utils.EmailValidatorUtils;
 import com.todo.utils.SpringUtils;
 import org.quartz.Scheduler;
@@ -25,6 +26,7 @@ public class ScheduleRunner implements CommandLineRunner {
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getIsDone, false);
         queryWrapper.ge(Todo::getEndTime, LocalDate.now());
+        queryWrapper.eq(Todo::getIsDelete, Constant.NOT_DELETE);
 
         List<Todo> todoList = todoService.list(queryWrapper);
 
