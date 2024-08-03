@@ -54,6 +54,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         queryWrapper.eq(Todo::getUserId, userId);
         queryWrapper.ge(Todo::getEndTime, startTime);
         queryWrapper.le(Todo::getStartTime, endTime);
+        queryWrapper.eq(Todo::getIsDelete, Constant.NOT_DELETE);
         queryWrapper.orderByAsc(Todo::getPriority);
 
         List<Todo> list = this.list(queryWrapper);
@@ -174,6 +175,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         todo.setUserId(UserThreadLocal.get());
         todo.setCreateTime(LocalDateTime.now());
         todo.setUpdateTime(LocalDateTime.now());
+        todo.setIsDelete(Constant.NOT_DELETE);
         if (todo.getPlanStartTime() != null) {
             todo.setPredictTime(todo.getPlanStartTime());
         }
@@ -187,10 +189,11 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(Long todoId) {
-        LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Todo::getId, todoId);
-        queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
-        boolean b = this.remove(queryWrapper);
+        LambdaUpdateWrapper<Todo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Todo::getId, todoId);
+        updateWrapper.eq(Todo::getUserId, UserThreadLocal.get());
+        updateWrapper.set(Todo::getIsDelete, Constant.DELETED);
+        boolean b = this.update(updateWrapper);
         if (b) {
             QuartzUtils.deleteScheduleJob(scheduler, todoId.toString());
         }
@@ -208,6 +211,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
         queryWrapper.ge(Todo::getStartTime, currentYearMonth + "-01");
         queryWrapper.le(Todo::getStartTime, currentYearMonth + "-31");
+        queryWrapper.eq(Todo::getIsDelete, Constant.NOT_DELETE);
         int count = this.count(queryWrapper);
         todoDTO.setCount(count);
         return todoDTO;
@@ -218,6 +222,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         TodoDTO todoDTO = new TodoDTO();
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
+        queryWrapper.eq(Todo::getIsDelete, Constant.NOT_DELETE);
         int count = this.count(queryWrapper);
         todoDTO.setCount(count);
         return todoDTO;
@@ -232,6 +237,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         queryWrapper.le(Todo::getStartTime, currentDate);
         queryWrapper.ge(Todo::getEndTime, currentDate);
         queryWrapper.eq(Todo::getIsDone, false);
+        queryWrapper.eq(Todo::getIsDelete, Constant.NOT_DELETE);
         int count = this.count(queryWrapper);
         todoDTO.setCount(count);
         return todoDTO;
@@ -245,6 +251,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
         queryWrapper.lt(Todo::getEndTime, currentDate);
         queryWrapper.eq(Todo::getIsDone, false);
+        queryWrapper.eq(Todo::getIsDelete, Constant.NOT_DELETE);
         int count = this.count(queryWrapper);
         todoDTO.setCount(count);
         return todoDTO;
@@ -256,6 +263,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
         queryWrapper.eq(Todo::getIsDone, true);
+        queryWrapper.eq(Todo::getIsDelete, Constant.NOT_DELETE);
         int count = this.count(queryWrapper);
         todoDTO.setCount(count);
         return todoDTO;
@@ -322,6 +330,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             todo.setCronNum(cronNum);
             todo.setPlanStartTime(planStartTime);
             todo.setPlanEndTime(planEndTime);
+            todo.setIsDelete(Constant.NOT_DELETE);
 
             todo.setStartTime(LocalDate.parse(sdf.format(date)));
             todo.setEndTime(LocalDate.parse(sdf.format(calendar.getTime())));
@@ -477,10 +486,11 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             return;
         }
 
-        LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
-        queryWrapper.in(Todo::getId, todoIds);
-        this.remove(queryWrapper);
+        LambdaUpdateWrapper<Todo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Todo::getUserId, UserThreadLocal.get());
+        updateWrapper.in(Todo::getId, todoIds);
+        updateWrapper.set(Todo::getIsDelete, Constant.NOT_DELETE);
+        this.update(updateWrapper);
     }
 
 }

@@ -11,7 +11,7 @@
  Target Server Version : 50644 (5.6.44)
  File Encoding         : 65001
 
- Date: 24/07/2024 14:58:28
+ Date: 03/08/2024 16:19:49
 */
 
 SET NAMES utf8mb4;
@@ -117,6 +117,7 @@ CREATE TABLE `todo`  (
   `cron_num` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `plan_start_time` time NULL DEFAULT NULL,
   `plan_end_time` time NULL DEFAULT NULL,
+  `is_delete` tinyint(4) UNSIGNED ZEROFILL NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 

@@ -18,6 +18,9 @@ public class Constant {
     public static final Boolean DISABLE_EMAIL = false;
 
 
+    public static final Boolean DELETED = true;
+    public static final Boolean NOT_DELETE = false;
+
 
     public static final String FILE_NOT_FOUND = "文件不存在";
 
