@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.todo.dto.operationLog.GetDateAndCountDTO;
 import com.todo.dto.operationLog.OperationLogDTO;
+import com.todo.dto.operationLog.OperationLogVO;
 import com.todo.dto.operationLog.PageDTO;
 import com.todo.mapper.OperationLogMapper;
 import com.todo.pojo.OperationLog;
@@ -39,12 +40,7 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
 
     @Override
     public OperationLogDTO getDateAndCountByUserId(GetDateAndCountDTO dto) {
-        LambdaQueryWrapper<OperationLog> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.ge(OperationLog::getCreateTime, dto.getStartDate());
-        queryWrapper.le(OperationLog::getCreateTime, dto.getEndDate());
-        queryWrapper.eq(OperationLog::getUserId, UserThreadLocal.get());
-        queryWrapper.select(OperationLog.class, i -> i.getColumn().equals("create_time"));
-        List<OperationLog> list = this.list(queryWrapper);
+        List<OperationLogVO> list = this.baseMapper.selectOperationLogByTime(dto, UserThreadLocal.get());
         OperationLogDTO operationLogDTO = new OperationLogDTO();
         operationLogDTO.setList(list);
         return operationLogDTO;

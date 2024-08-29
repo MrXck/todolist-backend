@@ -11,5 +11,5 @@ public class OperationLogDTO {
 
     private Page<OperationLog> page;
 
-    private List<OperationLog> list;
+    private List<OperationLogVO> list;
 }
