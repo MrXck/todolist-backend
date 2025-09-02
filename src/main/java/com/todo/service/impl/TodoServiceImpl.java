@@ -111,6 +111,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
         updateWrapper.set(Todo::getPlanStartTime, updateTodoDTO.getPlanStartTime());
         updateWrapper.set(Todo::getPlanEndTime, updateTodoDTO.getPlanEndTime());
+        updateWrapper.set(Todo::getNoticeType, updateTodoDTO.getNoticeType());
         boolean b = this.update(updateWrapper);
 
         if (!b) {
