@@ -210,7 +210,7 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
 
         LambdaQueryWrapper<Todo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Todo::getUserId, UserThreadLocal.get());
-        queryWrapper.ge(Todo::getStartTime, currentYearMonth + "-01");
+        queryWrapper.ge(Todo::getEndTime, currentYearMonth + "-01");
         queryWrapper.le(Todo::getStartTime, currentYearMonth + "-31");
         queryWrapper.eq(Todo::getIsDelete, Constant.NOT_DELETE);
         int count = this.count(queryWrapper);
