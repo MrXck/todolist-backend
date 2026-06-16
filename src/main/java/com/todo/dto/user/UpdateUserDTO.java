@@ -17,4 +17,9 @@ public class UpdateUserDTO {
     @NotNull(message = "是否开启邮件提醒不能为空")
     private Boolean enableEmail;
 
+    @NotNull(message = "是否开启android提醒不能为空")
+    private Boolean enableAndroid;
+
+    @NotNull(message = "是否开启ios提醒不能为空")
+    private Boolean enableIos;
 }

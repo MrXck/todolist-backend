@@ -11,6 +11,10 @@ public class User {
     private String password;
     private String email;
     private Boolean enableEmail;
+    private String iosPath;
+    private Boolean enableIos;
+    private String androidPath;
+    private Boolean enableAndroid;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
     private LocalDateTime lastLoginTime;

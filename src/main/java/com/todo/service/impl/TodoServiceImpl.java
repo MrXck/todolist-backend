@@ -108,6 +108,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         updateWrapper.set(Todo::getUpdateTime, LocalDateTime.now());
         updateWrapper.set(Todo::getPredictTime, updateTodoDTO.getPredictTime());
         updateWrapper.set(Todo::getEnableEmail, updateTodoDTO.getEnableEmail());
+        updateWrapper.set(Todo::getEnableAndroid, updateTodoDTO.getEnableAndroid());
+        updateWrapper.set(Todo::getEnableIos, updateTodoDTO.getEnableIos());
         updateWrapper.set(taskBoxId != null, Todo::getTaskBoxId, taskBoxId);
         updateWrapper.set(Todo::getPlanStartTime, updateTodoDTO.getPlanStartTime());
         updateWrapper.set(Todo::getPlanEndTime, updateTodoDTO.getPlanEndTime());
@@ -135,6 +137,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             todo.setPredictTime(updateTodoDTO.getPredictTime());
         }
         todo.setEnableEmail(updateTodoDTO.getEnableEmail());
+        todo.setEnableIos(updateTodoDTO.getEnableIos());
+        todo.setEnableAndroid(updateTodoDTO.getEnableAndroid());
         todo.setNoticeType(updateTodoDTO.getNoticeType());
         todo.setCronNum(updateTodoDTO.getCronNum());
 
@@ -289,6 +293,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
         List<Integer> generateDateList = batchGenerateTodoDTO.getGenerateDateList();
         LocalTime predictTime = batchGenerateTodoDTO.getPredictTime();
         Boolean enableEmail = batchGenerateTodoDTO.getEnableEmail();
+        Boolean enableIos = batchGenerateTodoDTO.getEnableIos();
+        Boolean enableAndroid = batchGenerateTodoDTO.getEnableAndroid();
         Integer noticeType = batchGenerateTodoDTO.getNoticeType();
         Integer cronNum = batchGenerateTodoDTO.getCronNum();
         LocalTime planStartTime = batchGenerateTodoDTO.getPlanStartTime();
@@ -327,6 +333,8 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
             todo.setPriority(priority);
             todo.setPredictTime(predictTime);
             todo.setEnableEmail(enableEmail);
+            todo.setEnableAndroid(enableAndroid);
+            todo.setEnableIos(enableIos);
             todo.setNoticeType(noticeType);
             todo.setCronNum(cronNum);
             todo.setPlanStartTime(planStartTime);
@@ -388,13 +396,15 @@ public class TodoServiceImpl extends ServiceImpl<TodoMapper, Todo> implements To
     public boolean canAddQuartz(Todo todo, Long userId) {
         // 判断该待办事项是否开启邮件提醒
         Boolean enableEmail = todo.getEnableEmail();
-        if (Constant.DISABLE_EMAIL.equals(enableEmail)) {
+        Boolean enableIos = todo.getEnableIos();
+        Boolean enableAndroid = todo.getEnableAndroid();
+        if (Constant.DISABLE_EMAIL.equals(enableEmail) && Constant.DISABLE_IOS.equals(enableIos) && Constant.DISABLE_ANDROID.equals(enableAndroid)) {
             return false;
         }
 
         // 获取用户然后判断该用户是否开启邮件提醒
         User user = userService.getById(userId);
-        if (Constant.DISABLE_EMAIL.equals(user.getEnableEmail())) {
+        if (Constant.DISABLE_EMAIL.equals(user.getEnableEmail()) && Constant.DISABLE_IOS.equals(user.getEnableIos()) && Constant.DISABLE_ANDROID.equals(user.getEnableAndroid())) {
             return false;
         }
 

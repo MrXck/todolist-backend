@@ -5,9 +5,7 @@ import com.todo.pojo.Todo;
 import com.todo.pojo.User;
 import com.todo.service.TodoService;
 import com.todo.service.UserService;
-import com.todo.utils.Constant;
-import com.todo.utils.EmailValidatorUtils;
-import com.todo.utils.MailUtils;
+import com.todo.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -68,18 +66,46 @@ public class EmailSchedule {
         List<User> users = userService.list(queryWrapper1);
 
         for (User user : users) {
-            if (Constant.DISABLE_EMAIL.equals(user.getEnableEmail())) {
-                continue;
-            }
-            String email = user.getEmail();
-            if (email != null && !email.isEmpty()) {
-                try {
-                    if (!EmailValidatorUtils.isValid(email)) {
-                        continue;
+            if (!Constant.DISABLE_EMAIL.equals(user.getEnableEmail())) {
+                String email = user.getEmail();
+                if (email != null && !email.isEmpty()) {
+                    try {
+                        if (!EmailValidatorUtils.isValid(email)) {
+                            continue;
+                        }
+                        mailUtils.sendMail(email, Constant.SEND_TODO_EMAIL_SUBJECT, String.join("\n\n", map.get(user.getId())));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    mailUtils.sendMail(email, Constant.SEND_TODO_EMAIL_SUBJECT, String.join("\n\n", map.get(user.getId())));
-                } catch (Exception e) {
-                    e.printStackTrace();
+                }
+            }
+
+
+            if (Constant.ENABLE_IOS.equals(user.getEnableIos())) {
+                String iosPath = user.getIosPath();
+                if (iosPath != null && !iosPath.isEmpty()) {
+                    try {
+                        if (!URLValidatorUtils.isValid(iosPath)) {
+                            continue;
+                        }
+                        BarkUtils.sendTitleAndContent(iosPath, Constant.SEND_TODO_IOS_SUBJECT, String.join("\n\n", map.get(user.getId())));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            if (!Constant.ENABLE_ANDROID.equals(user.getEnableAndroid())) {
+                String androidPath = user.getAndroidPath();
+                if (androidPath != null && !androidPath.isEmpty()) {
+                    try {
+                        if (!URLValidatorUtils.isValid(androidPath)) {
+                            continue;
+                        }
+                        GotifyUtils.sendTitleAndContent(androidPath, Constant.SEND_TODO_ANDROID_SUBJECT, String.join("\n\n", map.get(user.getId())));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

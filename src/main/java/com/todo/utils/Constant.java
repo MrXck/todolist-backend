@@ -16,6 +16,10 @@ public class Constant {
     public static final String USERNAME_ALREADY_ERROR = "用户名已存在";
     public static final Boolean ENABLE_EMAIL = true;
     public static final Boolean DISABLE_EMAIL = false;
+    public static final Boolean DISABLE_IOS = false;
+    public static final Boolean ENABLE_IOS = true;
+    public static final Boolean DISABLE_ANDROID = false;
+    public static final Boolean ENABLE_ANDROID = true;
 
 
     public static final Boolean DELETED = true;
@@ -31,6 +35,8 @@ public class Constant {
     public static final String NOT_FOUND_NOTE_ERROR = "没有这篇文章";
 
     public static final String SEND_TODO_EMAIL_SUBJECT = "今日待办事项";
+    public static final String SEND_TODO_IOS_SUBJECT = "今日待办事项";
+    public static final String SEND_TODO_ANDROID_SUBJECT = "今日待办事项";
 
     public static final String TODO_START_TODO_ERROR = "待办事项开始后就不能修改开始时间了";
 
@@ -39,6 +45,7 @@ public class Constant {
     public static final String CHECK_EMAIL_ERROR = "请输入正确的邮箱";
     public static final String CHECK_EMAIL_CODE_ERROR = "验证错误";
     public static final String SEND_EMAIL_CODE_ERROR = "请等待当前验证码失效后再发送";
+    public static final String CHECK_URL_ERROR = "请输入正确的URL路径";
 
     public static final String TASK_BOX_ERROR = "已有相同名称的清单";
 

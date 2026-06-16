@@ -1,6 +1,7 @@
 package com.todo.controller;
 
 import com.todo.dto.user.RegisterUserDTO;
+import com.todo.dto.user.SendUrlDTO;
 import com.todo.dto.user.UpdateUserDTO;
 import com.todo.dto.user.UserDTO;
 import com.todo.service.UserService;
@@ -46,5 +47,30 @@ public class UserController {
     @GetMapping("/bindEmail/{email}/{code}")
     public void bindEmail(@PathVariable("email") String email, @PathVariable("code") String code) {
         userService.bindEmail(email, code);
+    }
+
+    @Log
+    @PostMapping("/sendIos")
+    public void sendIos(@RequestBody SendUrlDTO sendUrlDTO) {
+        userService.sendIos(sendUrlDTO);
+    }
+
+    @Log
+    @PostMapping("/bindIos")
+    public void bindIos(@RequestBody SendUrlDTO sendUrlDTO) {
+        userService.bindIos(sendUrlDTO);
+    }
+
+    @Log
+    @PostMapping("/sendAndroid")
+    public void sendAndroid(@RequestBody SendUrlDTO sendUrlDTO) {
+        userService.sendAndroid(sendUrlDTO);
+    }
+
+
+    @Log
+    @PostMapping("/bindAndroid")
+    public void bindAndroid(@RequestBody SendUrlDTO sendUrlDTO) {
+        userService.bindAndroid(sendUrlDTO);
     }
 }

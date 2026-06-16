@@ -44,6 +44,12 @@ public class UpdateTodoDTO {
     @NotNull(message = "是否开启邮件提醒不能为空")
     private Boolean enableEmail;
 
+    @NotNull(message = "是否开启IOS提醒不能为空")
+    private Boolean enableIos;
+
+    @NotNull(message = "是否开启ANDROID提醒不能为空")
+    private Boolean enableAndroid;
+
     private Integer noticeType;
 
     private Integer cronNum;

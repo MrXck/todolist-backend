@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.todo.dto.user.RegisterUserDTO;
+import com.todo.dto.user.SendUrlDTO;
 import com.todo.dto.user.UpdateUserDTO;
 import com.todo.dto.user.UserDTO;
 import com.todo.exception.APIException;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,6 +81,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         updateWrapper.set(User::getUsername, username);
         updateWrapper.set(User::getPassword, MD5Utils.md5(password));
         updateWrapper.set(User::getEnableEmail, updateUserDTO.getEnableEmail());
+        updateWrapper.set(User::getEnableAndroid, updateUserDTO.getEnableAndroid());
+        updateWrapper.set(User::getEnableIos, updateUserDTO.getEnableIos());
         updateWrapper.set(User::getUpdateTime, LocalDateTime.now());
 
         this.update(updateWrapper);
@@ -136,6 +140,80 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(User::getId, UserThreadLocal.get());
         updateWrapper.set(User::getEmail, email);
+        this.update(updateWrapper);
+    }
+
+    @Override
+    public void sendIos(SendUrlDTO sendUrlDTO) {
+        String path = sendUrlDTO.getPath();
+        if (!URLValidatorUtils.isValid(path)) {
+            throw new APIException(Constant.CHECK_URL_ERROR);
+        }
+
+        if (cacheUtils.get(UserThreadLocal.get().toString()) != null || cacheUtils.get(path) != null) {
+            throw new APIException(Constant.SEND_EMAIL_CODE_ERROR);
+        }
+
+        String string = ValidateCodeUtils.generateValidateCode4String(6);
+        cacheUtils.put(UserThreadLocal.get().toString(), string, 300, TimeUnit.SECONDS);
+        cacheUtils.put(path, string, 300, TimeUnit.SECONDS);
+        try {
+            BarkUtils.sendTitleAndContent(path, "消息推送绑定验证码", string);
+        } catch (UnsupportedEncodingException e) {
+            throw new APIException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void bindIos(SendUrlDTO sendUrlDTO) {
+        String path = sendUrlDTO.getPath();
+        String code = sendUrlDTO.getCode();
+        String string = cacheUtils.get(path);
+
+        if (string == null || !string.equals(code)) {
+            throw new APIException(Constant.CHECK_EMAIL_CODE_ERROR);
+        }
+
+        cacheUtils.remove(path);
+
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getId, UserThreadLocal.get());
+        updateWrapper.set(User::getIosPath, path);
+        this.update(updateWrapper);
+    }
+
+    @Override
+    public void sendAndroid(SendUrlDTO sendUrlDTO) {
+        String path = sendUrlDTO.getPath();
+        if (!URLValidatorUtils.isValid(path)) {
+            throw new APIException(Constant.CHECK_URL_ERROR);
+        }
+
+        if (cacheUtils.get(UserThreadLocal.get().toString()) != null || cacheUtils.get(path) != null) {
+            throw new APIException(Constant.SEND_EMAIL_CODE_ERROR);
+        }
+
+        String string = ValidateCodeUtils.generateValidateCode4String(6);
+        cacheUtils.put(UserThreadLocal.get().toString(), string, 300, TimeUnit.SECONDS);
+        cacheUtils.put(path, string, 300, TimeUnit.SECONDS);
+        GotifyUtils.sendTitleAndContent(path, "消息推送绑定验证码", string);
+    }
+
+    @Override
+    public void bindAndroid(SendUrlDTO sendUrlDTO) {
+        String path = sendUrlDTO.getPath();
+        String code = sendUrlDTO.getCode();
+        String string = cacheUtils.get(path);
+
+        if (string == null || !string.equals(code)) {
+            throw new APIException(Constant.CHECK_EMAIL_CODE_ERROR);
+        }
+
+        cacheUtils.remove(path);
+
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getId, UserThreadLocal.get());
+        updateWrapper.set(User::getAndroidPath, path);
         this.update(updateWrapper);
     }
 }
