@@ -42,6 +42,10 @@ public class AutomaticTask implements Job {
             mailUtils.sendMail(user.getEmail(), title, detail);
         }
 
+        if (detail.length() > 1000) {
+            detail = detail.substring(0, 1000) + "。 详情在网页查看...";
+        }
+
         if (Constant.ENABLE_IOS.equals(todo.getEnableIos()) && Constant.ENABLE_IOS.equals(user.getEnableIos()) && URLValidatorUtils.isValid(user.getIosPath())) {
             try {
                 BarkUtils.sendTitleAndContent(user.getIosPath(), title, detail);

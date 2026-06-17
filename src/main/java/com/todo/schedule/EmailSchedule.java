@@ -66,43 +66,46 @@ public class EmailSchedule {
         List<User> users = userService.list(queryWrapper1);
 
         for (User user : users) {
-            if (!Constant.DISABLE_EMAIL.equals(user.getEnableEmail())) {
+            String content = String.join("\n\n", map.get(user.getId()));
+
+            if (Constant.ENABLE_EMAIL.equals(user.getEnableEmail())) {
                 String email = user.getEmail();
                 if (email != null && !email.isEmpty()) {
                     try {
-                        if (!EmailValidatorUtils.isValid(email)) {
-                            continue;
+                        if (EmailValidatorUtils.isValid(email)) {
+                            mailUtils.sendMail(email, Constant.SEND_TODO_EMAIL_SUBJECT, content);
                         }
-                        mailUtils.sendMail(email, Constant.SEND_TODO_EMAIL_SUBJECT, String.join("\n\n", map.get(user.getId())));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
 
+            if (content.length() > 1000) {
+                content = content.substring(0, 1000) + "。 详情在网页查看...";
+            }
 
             if (Constant.ENABLE_IOS.equals(user.getEnableIos())) {
                 String iosPath = user.getIosPath();
                 if (iosPath != null && !iosPath.isEmpty()) {
                     try {
-                        if (!URLValidatorUtils.isValid(iosPath)) {
-                            continue;
+                        if (URLValidatorUtils.isValid(iosPath)) {
+                            BarkUtils.sendTitleAndContent(iosPath, Constant.SEND_TODO_IOS_SUBJECT, content);
                         }
-                        BarkUtils.sendTitleAndContent(iosPath, Constant.SEND_TODO_IOS_SUBJECT, String.join("\n\n", map.get(user.getId())));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
 
-            if (!Constant.ENABLE_ANDROID.equals(user.getEnableAndroid())) {
+            if (Constant.ENABLE_ANDROID.equals(user.getEnableAndroid())) {
                 String androidPath = user.getAndroidPath();
                 if (androidPath != null && !androidPath.isEmpty()) {
                     try {
-                        if (!URLValidatorUtils.isValid(androidPath)) {
-                            continue;
+                        if (URLValidatorUtils.isValid(androidPath)) {
+                            GotifyUtils.sendTitleAndContent(androidPath, Constant.SEND_TODO_ANDROID_SUBJECT, content);
                         }
-                        GotifyUtils.sendTitleAndContent(androidPath, Constant.SEND_TODO_ANDROID_SUBJECT, String.join("\n\n", map.get(user.getId())));
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

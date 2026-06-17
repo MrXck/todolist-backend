@@ -113,6 +113,8 @@ CREATE TABLE `todo`  (
   `end_do_time` datetime NULL DEFAULT NULL,
   `predict_time` time NOT NULL,
   `enable_email` tinyint(4) NOT NULL,
+  `enable_ios` tinyint(4) NOT NULL,
+  `enable_android` tinyint(4) NOT NULL,
   `notice_type` tinyint(4) NULL DEFAULT NULL,
   `cron_num` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `plan_start_time` time NULL DEFAULT NULL,
@@ -134,6 +136,10 @@ CREATE TABLE `user`  (
   `last_login_time` datetime NULL DEFAULT NULL,
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `enable_email` tinyint(4) NOT NULL,
+  `enable_ios` tinyint(4) NOT NULL,
+  `enable_android` tinyint(4) NOT NULL,
+  `ios_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `android_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = COMPACT;
 
